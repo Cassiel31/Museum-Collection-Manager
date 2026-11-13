@@ -10,6 +10,7 @@ from app.services.institutions import (
 
 from pydantic import BaseModel, Field
 from app.services.institutions import create_institution
+from app.services.institutions import update_institution
 
 router = APIRouter(
     prefix="/api/institutions",
@@ -51,3 +52,23 @@ def add_institution(institution: InstitutionCreate):
     return create_institution(
         institution.model_dump(exclude_none=True)
     )
+
+
+@router.put("/{institution_id}")
+def edit_institution(
+    institution_id: UUID,
+    institution: InstitutionCreate
+):
+    """Update an existing museum or organisation."""
+    updated = update_institution(
+        str(institution_id),
+        institution.model_dump()
+    )
+
+    if updated is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Institution not found"
+        )
+
+    return updated
