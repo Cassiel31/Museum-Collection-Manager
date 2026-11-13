@@ -45,3 +45,14 @@ def update_exhibition(exhibition_id: str, exhibition_data: dict):
     )
 
     return response.data[0] if response.data else None
+
+def delete_exhibition(exhibition_id: str):
+    """Delete an exhibition from Supabase."""
+    response = (
+        supabase.table("exhibitions")
+        .delete()
+        .eq("exhibition_id", exhibition_id)
+        .execute()
+    )
+
+    return bool(response.data)
