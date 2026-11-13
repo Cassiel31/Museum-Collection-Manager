@@ -83,3 +83,18 @@ def get_exhibition_artifacts(exhibition_id: str):
     )
 
     return response.data
+
+def remove_artifact_from_exhibition(
+    exhibition_id: str,
+    artifact_id: str
+):
+    """Remove an artifact assignment from an exhibition."""
+    response = (
+        supabase.table("exhibition_artifacts")
+        .delete()
+        .eq("exhibition_id", exhibition_id)
+        .eq("artifact_id", artifact_id)
+        .execute()
+    )
+
+    return bool(response.data)
