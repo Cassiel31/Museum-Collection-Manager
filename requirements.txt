@@ -1,3 +1,5 @@
+
+pydantic
 supabase
 python-dotenv
 fastapi
@@ -7,7 +9,5 @@ python-multipart
 pandas
 numpy
 requests
-supabase
-python-dotenv
 pytest
 httpx
