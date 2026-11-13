@@ -5,6 +5,7 @@ from app.services.exhibitions import update_exhibition
 from app.services.exhibitions import assign_artifact_to_exhibition
 from app.services.exhibitions import delete_exhibition
 from uuid import UUID
+from app.services.exhibitions import get_exhibition_artifacts
 from fastapi import APIRouter, HTTPException
 from app.services.exhibitions import (
     get_all_exhibitions,
@@ -113,3 +114,8 @@ def add_artifact_to_exhibition(
         str(exhibition_id),
         str(assignment.artifact_id)
     )
+
+@router.get("/{exhibition_id}/artifacts")
+def list_exhibition_artifacts(exhibition_id: UUID):
+    """List artifacts assigned to an exhibition."""
+    return get_exhibition_artifacts(str(exhibition_id))
