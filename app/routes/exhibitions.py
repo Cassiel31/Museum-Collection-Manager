@@ -5,6 +5,7 @@ from app.services.exhibitions import update_exhibition
 from app.services.exhibitions import assign_artifact_to_exhibition
 from app.services.exhibitions import delete_exhibition
 from uuid import UUID
+from app.services.exhibitions import remove_artifact_from_exhibition
 from app.services.exhibitions import get_exhibition_artifacts
 from fastapi import APIRouter, HTTPException
 from app.services.exhibitions import (
@@ -119,3 +120,24 @@ def add_artifact_to_exhibition(
 def list_exhibition_artifacts(exhibition_id: UUID):
     """List artifacts assigned to an exhibition."""
     return get_exhibition_artifacts(str(exhibition_id))
+
+@router.delete("/{exhibition_id}/artifacts/{artifact_id}")
+def unassign_artifact(
+    exhibition_id: UUID,
+    artifact_id: UUID
+):
+    """Remove an artifact from an exhibition."""
+    removed = remove_artifact_from_exhibition(
+        str(exhibition_id),
+        str(artifact_id)
+    )
+
+    if not removed:
+        raise HTTPException(
+            status_code=404,
+            detail="Artifact assignment not found"
+        )
+
+    return {
+        "message": "Artifact removed from exhibition successfully"
+    }
