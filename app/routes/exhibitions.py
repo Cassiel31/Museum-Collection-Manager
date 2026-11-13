@@ -1,4 +1,6 @@
-
+from datetime import date
+from pydantic import BaseModel, Field
+from app.services.exhibitions import create_exhibition
 from fastapi import APIRouter, HTTPException
 from app.services.exhibitions import (
     get_all_exhibitions,
@@ -29,3 +31,24 @@ def exhibition_details(exhibition_id: str):
         )
 
     return exhibition
+class ExhibitionCreate(BaseModel):
+    exhibition_name: str = Field(min_length=1, max_length=200)
+    description: str | None = None
+    location: str | None = None
+    start_date: date
+    end_date: date
+    status: str = "Planned"
+
+
+@router.post("/", status_code=201)
+def add_exhibition(exhibition: ExhibitionCreate):
+    """Create a new museum exhibition."""
+    if exhibition.end_date <= exhibition.start_date:
+        raise HTTPException(
+            status_code=400,
+            detail="End date must be after start date"
+        )
+
+    return create_exhibition(
+        exhibition.model_dump(mode="json")
+    )
