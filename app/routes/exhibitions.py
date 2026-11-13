@@ -2,7 +2,9 @@ from datetime import date
 from pydantic import BaseModel, Field
 from app.services.exhibitions import create_exhibition
 from app.services.exhibitions import update_exhibition
+from app.services.exhibitions import assign_artifact_to_exhibition
 from app.services.exhibitions import delete_exhibition
+from uuid import UUID
 from fastapi import APIRouter, HTTPException
 from app.services.exhibitions import (
     get_all_exhibitions,
@@ -93,3 +95,21 @@ def remove_exhibition(exhibition_id: str):
         )
 
     return {"message": "Exhibition deleted successfully"}
+
+
+
+
+class ArtifactAssignment(BaseModel):
+    artifact_id: UUID
+
+
+@router.post("/{exhibition_id}/artifacts", status_code=201)
+def add_artifact_to_exhibition(
+    exhibition_id: UUID,
+    assignment: ArtifactAssignment
+):
+    """Assign an artifact to an exhibition."""
+    return assign_artifact_to_exhibition(
+        str(exhibition_id),
+        str(assignment.artifact_id)
+    )
