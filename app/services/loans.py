@@ -24,3 +24,13 @@ def get_loan_by_id(loan_id: str):
     )
 
     return response.data[0] if response.data else None
+
+def create_loan(loan_data: dict):
+    """Create a new museum loan in Supabase."""
+    response = (
+        supabase.table("loans")
+        .insert(loan_data)
+        .execute()
+    )
+
+    return response.data[0]
