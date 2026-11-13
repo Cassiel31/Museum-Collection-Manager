@@ -2,6 +2,7 @@ from datetime import date
 from pydantic import BaseModel, Field
 from app.services.exhibitions import create_exhibition
 from app.services.exhibitions import update_exhibition
+from app.services.exhibitions import delete_exhibition
 from fastapi import APIRouter, HTTPException
 from app.services.exhibitions import (
     get_all_exhibitions,
@@ -79,3 +80,16 @@ def edit_exhibition(
         )
 
     return updated
+
+@router.delete("/{exhibition_id}")
+def remove_exhibition(exhibition_id: str):
+    """Delete an existing museum exhibition."""
+    deleted = delete_exhibition(exhibition_id)
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Exhibition not found"
+        )
+
+    return {"message": "Exhibition deleted successfully"}
