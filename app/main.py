@@ -23,3 +23,6 @@ def health_check():
 from app.routes.pages import router as pages_router
 
 app.include_router(pages_router)
+
+from app.routes.collections import router as collections_router
+app.include_router(collections_router)
