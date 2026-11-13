@@ -34,3 +34,14 @@ def create_exhibition(exhibition_data: dict):
     )
 
     return response.data[0]
+
+def update_exhibition(exhibition_id: str, exhibition_data: dict):
+    """Update an existing exhibition in Supabase."""
+    response = (
+        supabase.table("exhibitions")
+        .update(exhibition_data)
+        .eq("exhibition_id", exhibition_id)
+        .execute()
+    )
+
+    return response.data[0] if response.data else None
