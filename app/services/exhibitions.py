@@ -23,3 +23,14 @@ def get_exhibition_by_id(exhibition_id: str):
     )
 
     return response.data[0] if response.data else None
+
+
+def create_exhibition(exhibition_data: dict):
+    """Create a new exhibition in Supabase."""
+    response = (
+        supabase.table("exhibitions")
+        .insert(exhibition_data)
+        .execute()
+    )
+
+    return response.data[0]
