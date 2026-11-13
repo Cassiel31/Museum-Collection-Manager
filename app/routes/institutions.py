@@ -8,6 +8,9 @@ from app.services.institutions import (
     get_institution_by_id,
 )
 
+from pydantic import BaseModel, Field
+from app.services.institutions import create_institution
+
 router = APIRouter(
     prefix="/api/institutions",
     tags=["Institutions"]
@@ -32,4 +35,19 @@ def institution_details(institution_id: UUID):
         )
 
     return institution
-v
+
+
+class InstitutionCreate(BaseModel):
+    institution_name: str = Field(min_length=1, max_length=200)
+    contact_person: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    address: str | None = None
+
+
+@router.post("/", status_code=201)
+def add_institution(institution: InstitutionCreate):
+    """Register a new museum or organisation."""
+    return create_institution(
+        institution.model_dump(exclude_none=True)
+    )
