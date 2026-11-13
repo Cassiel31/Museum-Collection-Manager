@@ -56,3 +56,19 @@ def delete_exhibition(exhibition_id: str):
     )
 
     return bool(response.data)
+
+def assign_artifact_to_exhibition(
+    exhibition_id: str,
+    artifact_id: str
+):
+    """Assign an artifact to an exhibition."""
+    response = (
+        supabase.table("exhibition_artifacts")
+        .insert({
+            "exhibition_id": exhibition_id,
+            "artifact_id": artifact_id
+        })
+        .execute()
+    )
+
+    return response.data[0]
