@@ -72,3 +72,14 @@ def assign_artifact_to_exhibition(
     )
 
     return response.data[0]
+
+def get_exhibition_artifacts(exhibition_id: str):
+    """Retrieve artifacts assigned to an exhibition."""
+    response = (
+        supabase.table("exhibition_artifacts")
+        .select("artifact_id, artifacts(*)")
+        .eq("exhibition_id", exhibition_id)
+        .execute()
+    )
+
+    return response.data
