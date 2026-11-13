@@ -22,3 +22,13 @@ def get_institution_by_id(institution_id: str):
         .execute()
     )
     return response.data[0] if response.data else None
+
+def create_institution(institution_data: dict):
+    """Create a new institution in Supabase."""
+    response = (
+        supabase.table("institutions")
+        .insert(institution_data)
+        .execute()
+    )
+
+    return response.data[0]
