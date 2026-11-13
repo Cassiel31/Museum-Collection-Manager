@@ -43,3 +43,14 @@ def update_institution(institution_id: str, institution_data: dict):
     )
 
     return response.data[0] if response.data else None
+
+def delete_institution(institution_id: str):
+    """Delete an institution from Supabase."""
+    response = (
+        supabase.table("institutions")
+        .delete()
+        .eq("institution_id", institution_id)
+        .execute()
+    )
+
+    return bool(response.data)
