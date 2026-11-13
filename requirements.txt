@@ -1,2 +1,13 @@
 supabase
 python-dotenv
+fastapi
+uvicorn
+jinja2
+python-multipart
+pandas
+numpy
+requests
+supabase
+python-dotenv
+pytest
+httpx
