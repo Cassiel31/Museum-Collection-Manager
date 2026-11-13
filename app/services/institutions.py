@@ -32,3 +32,14 @@ def create_institution(institution_data: dict):
     )
 
     return response.data[0]
+
+def update_institution(institution_id: str, institution_data: dict):
+    """Update an existing institution in Supabase."""
+    response = (
+        supabase.table("institutions")
+        .update(institution_data)
+        .eq("institution_id", institution_id)
+        .execute()
+    )
+
+    return response.data[0] if response.data else None
