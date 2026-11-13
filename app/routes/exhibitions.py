@@ -1,6 +1,7 @@
 from datetime import date
 from pydantic import BaseModel, Field
 from app.services.exhibitions import create_exhibition
+from app.services.exhibitions import update_exhibition
 from fastapi import APIRouter, HTTPException
 from app.services.exhibitions import (
     get_all_exhibitions,
@@ -52,3 +53,29 @@ def add_exhibition(exhibition: ExhibitionCreate):
     return create_exhibition(
         exhibition.model_dump(mode="json")
     )
+
+
+@router.put("/{exhibition_id}")
+def edit_exhibition(
+    exhibition_id: str,
+    exhibition: ExhibitionCreate
+):
+    """Update an existing museum exhibition."""
+    if exhibition.end_date <= exhibition.start_date:
+        raise HTTPException(
+            status_code=400,
+            detail="End date must be after start date"
+        )
+
+    updated = update_exhibition(
+        exhibition_id,
+        exhibition.model_dump(mode="json")
+    )
+
+    if updated is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Exhibition not found"
+        )
+
+    return updated
