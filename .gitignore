@@ -12,3 +12,8 @@ venv/
 
 # IDE
 .vscode/
+
+.env
+__pycache__/
+.pytest_cache/
+.venv/
