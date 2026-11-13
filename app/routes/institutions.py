@@ -11,6 +11,7 @@ from app.services.institutions import (
 from pydantic import BaseModel, Field
 from app.services.institutions import create_institution
 from app.services.institutions import update_institution
+from app.services.institutions import delete_institution
 
 router = APIRouter(
     prefix="/api/institutions",
@@ -72,3 +73,19 @@ def edit_institution(
         )
 
     return updated
+
+@router.delete("/{institution_id}")
+def remove_institution(institution_id: UUID):
+    """Delete an existing institution."""
+    deleted = delete_institution(str(institution_id))
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Institution not found"
+        )
+
+    return {
+        "message": "Institution deleted successfully"
+    }
+   
