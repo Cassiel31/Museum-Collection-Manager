@@ -34,3 +34,14 @@ def create_loan(loan_data: dict):
     )
 
     return response.data[0]
+
+def update_loan(loan_id: str, loan_data: dict):
+    """Update an existing loan in Supabase."""
+    response = (
+        supabase.table("loans")
+        .update(loan_data)
+        .eq("loan_id", loan_id)
+        .execute()
+    )
+
+    return response.data[0] if response.data else None
