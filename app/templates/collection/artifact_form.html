@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Add Artifact | The Archive{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/artifacts.css">
+{% endblock %}
+
+{% block content %}
+
+<section class="welcome">
+    <p class="eyebrow">THE ARCHIVE / COLLECTIONS</p>
+    <h1>Add an Artifact.</h1>
+    <p class="subtitle">Record a new piece in the museum collection.</p>
+</section>
+
+<form action="/artifacts/add" method="post" class="artifact-form">
+
+    <div class="form-group">
+        <label>Artifact Title *</label>
+        <input type="text" name="title" required>
+    </div>
+
+    <div class="form-group">
+        <label>Origin</label>
+        <input type="text" name="origin">
+    </div>
+
+    <div class="form-group">
+        <label>Period</label>
+        <input type="text" name="period">
+    </div>
+
+    <div class="form-group">
+        <label>Creation Year</label>
+        <input type="number" name="creation_year">
+    </div>
+
+    <div class="form-group">
+        <label>Material</label>
+        <input type="text" name="material">
+    </div>
+
+    <div class="form-group">
+        <label>Dimensions</label>
+        <input type="text" name="dimensions">
+    </div>
+
+    <div class="form-group">
+        <label>Image URL</label>
+        <input type="url" name="image_url">
+    </div>
+
+    <div class="form-group">
+        <label>Condition</label>
+        <select name="current_condition">
+            <option value="">Select condition</option>
+            <option value="Excellent">Excellent</option>
+            <option value="Good">Good</option>
+            <option value="Fair">Fair</option>
+            <option value="Poor">Poor</option>
+            <option value="Under Restoration">Under Restoration</option>
+        </select>
+    </div>
+
+    <div class="form-group full-width">
+        <label>Description</label>
+        <textarea name="description" rows="5"></textarea>
+    </div>
+
+    <div class="form-actions">
+        <a href="/artifacts">Cancel</a>
+        <button type="submit">Save Artifact</button>
+    </div>
+
+</form>
+
+{% endblock %}

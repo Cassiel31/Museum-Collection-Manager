@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ artifact.title }} | The Archive{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/artifacts.css">
+{% endblock %}
+
+{% block content %}
+
+<section class="welcome">
+    <p class="eyebrow">THE ARCHIVE / ARTIFACT RECORD</p>
+    <h1>{{ artifact.title }}</h1>
+    <p class="subtitle">A closer look at an artifact in our collection.</p>
+</section>
+
+<section class="artifact-detail-container">
+
+    <div class="artifact-detail-image">
+        {% if artifact.image_url %}
+        <img src="{{ artifact.image_url }}" alt="{{ artifact.title }}">
+        {% else %}
+        <div class="artifact-image-placeholder">
+            No image available
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="artifact-detail-info">
+
+        <p class="artifact-id">ARTIFACT RECORD</p>
+
+        <h2>{{ artifact.title }}</h2>
+
+        <div class="artifact-detail-fields">
+
+            <div>
+                <span>Origin</span>
+                <p>{{ artifact.origin or "Not recorded" }}</p>
+            </div>
+
+            <div>
+                <span>Period</span>
+                <p>{{ artifact.period or "Not recorded" }}</p>
+            </div>
+
+            <div>
+                <span>Creation Year</span>
+                <p>{{ artifact.creation_year or "Not recorded" }}</p>
+            </div>
+
+            <div>
+                <span>Material</span>
+                <p>{{ artifact.material or "Not recorded" }}</p>
+            </div>
+
+            <div>
+                <span>Dimensions</span>
+                <p>{{ artifact.dimensions or "Not recorded" }}</p>
+            </div>
+
+            <div>
+                <span>Condition</span>
+                <p>{{ artifact.current_condition or "Not recorded" }}</p>
+            </div>
+
+            <div>
+                <span>Acquisition Date</span>
+                <p>{{ artifact.acquisition_date or "Not recorded" }}</p>
+            </div>
+
+        </div>
+
+        <div class="artifact-description">
+            <h3>Description</h3>
+            <p>{{ artifact.description or "No description available." }}</p>
+        </div>
+
+        <a href="/artifacts" class="artifact-view-link">
+            ← Back to Artifact Collection
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

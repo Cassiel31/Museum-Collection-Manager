@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Artifacts | The Archive{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/artifacts.css">
+{% endblock %}
+
+{% block content %}
+
+<section class="welcome">
+    <p class="eyebrow">THE ARCHIVE / COLLECTIONS</p>
+    <h1>Artifact Collection.</h1>
+    <p class="subtitle">
+        Explore and manage the artifacts preserved in our collection.
+    </p>
+</section>
+
+<section class="artifact-list-section">
+
+    <div class="artifact-list-heading">
+    <div>
+        <h2>All Artifacts</h2>
+        <span>{{ artifacts|length }} records</span>
+    </div>
+
+    <a href="/artifacts/add" class="add-artifact-button">
+        + Add Artifact
+    </a>
+</div>
+
+    {% if artifacts %}
+
+    <div class="artifact-grid">
+
+        {% for artifact in artifacts %}
+
+        <article class="artifact-card">
+
+            {% if artifact.image_url %}
+            <img
+                src="{{ artifact.image_url }}"
+                alt="{{ artifact.title }}"
+                class="artifact-image"
+            >
+            {% else %}
+            <div class="artifact-image-placeholder">
+                No image available
+            </div>
+            {% endif %}
+
+            <div class="artifact-info">
+
+                <p class="artifact-id">
+                    ARTIFACT RECORD
+                </p>
+
+                <h3>{{ artifact.title }}</h3>
+
+                <p>{{ artifact.origin or "Unknown origin" }}</p>
+
+                <div class="artifact-details">
+                    <span>{{ artifact.period or "Period unknown" }}</span>
+                    <span>{{ artifact.material or "Material unknown" }}</span>
+                </div>
+
+                <a
+                    href="/artifacts/{{ artifact.artifact_id }}"
+                    class="artifact-view-link"
+                >
+                    View Details →
+                </a>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+        <h2>No artifacts yet.</h2>
+        <p>Your collection is waiting for its first records.</p>
+    </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

@@ -13,11 +13,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Stylesheets -->
-<link rel="stylesheet" href="/static/css/global.css">
-<link rel="stylesheet" href="/static/css/layout.css">
-<link rel="stylesheet" href="/static/css/dashboard.css">
-
+    <!-- Main Stylesheets -->
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/collections.css">
+    <link rel="stylesheet" href="/static/css/met_import.css">
 
     {% block extra_css %}{% endblock %}
 </head>
@@ -43,73 +44,88 @@
         <!-- NAVIGATION -->
         <nav class="sidebar-nav">
 
+            <!-- COLLECTIONS -->
             <div class="nav-section">
 
                 <p class="nav-heading">COLLECTIONS</p>
 
-                <a href="/" class="nav-link">
+                <a href="/" class="nav-link {% if request.url.path == '/' %}active{% endif %}">
                     <span class="nav-icon">⌂</span>
                     <span>Dashboard</span>
                 </a>
 
-                <a href="/artifacts" class="nav-link">
+                <a href="/artifacts" class="nav-link {% if request.url.path.startswith('/artifacts') %}active{% endif %}">
                     <span class="nav-icon">▧</span>
                     <span>Artifacts</span>
                 </a>
 
-                <a href="/artists" class="nav-link">
+                <a href="/artists" class="nav-link {% if request.url.path.startswith('/artists') %}active{% endif %}">
                     <span class="nav-icon">♙</span>
                     <span>Artists & Creators</span>
                 </a>
 
-                <a href="/categories" class="nav-link">
+                <a href="/categories" class="nav-link {% if request.url.path.startswith('/categories') %}active{% endif %}">
                     <span class="nav-icon">▱</span>
                     <span>Categories</span>
                 </a>
 
-                <a href="/acquisitions" class="nav-link">
+                <a href="/acquisitions" class="nav-link {% if request.url.path.startswith('/acquisitions') %}active{% endif %}">
                     <span class="nav-icon">▤</span>
                     <span>Acquisitions</span>
                 </a>
 
+                <a href="/collections" class="nav-link {% if request.url.path.startswith('/collections') %}active{% endif %}">
+                    <span class="nav-icon">▤</span>
+                    <span>My Collections</span>
+                </a>
+
+                <a href="/met-import" class="nav-link {% if request.url.path.startswith('/met-import') %}active{% endif %}">
+                    <span class="nav-icon">＋</span>
+                    <span>Met Museum Import</span>
+                </a>
+
             </div>
 
+
+            <!-- EXHIBITIONS -->
             <div class="nav-section">
 
                 <p class="nav-heading">EXHIBITIONS</p>
 
-                <a href="/exhibitions" class="nav-link">
+                <a href="/exhibitions" class="nav-link {% if request.url.path.startswith('/exhibitions') %}active{% endif %}">
                     <span class="nav-icon">▣</span>
                     <span>Exhibitions</span>
                 </a>
 
-                <a href="/loans" class="nav-link">
+                <a href="/loans" class="nav-link {% if request.url.path.startswith('/loans') %}active{% endif %}">
                     <span class="nav-icon">⇄</span>
                     <span>Loans</span>
                 </a>
 
-                <a href="/institutions" class="nav-link">
+                <a href="/institutions" class="nav-link {% if request.url.path.startswith('/institutions') %}active{% endif %}">
                     <span class="nav-icon">⌂</span>
                     <span>Institutions</span>
                 </a>
 
             </div>
 
+
+            <!-- CONSERVATION -->
             <div class="nav-section">
 
                 <p class="nav-heading">CONSERVATION</p>
 
-                <a href="/restorations" class="nav-link">
+                <a href="/restorations" class="nav-link {% if request.url.path.startswith('/restorations') %}active{% endif %}">
                     <span class="nav-icon">❧</span>
                     <span>Restorations</span>
                 </a>
 
-                <a href="/staff" class="nav-link">
+                <a href="/staff" class="nav-link {% if request.url.path.startswith('/staff') %}active{% endif %}">
                     <span class="nav-icon">♙</span>
                     <span>Staff</span>
                 </a>
 
-                <a href="/condition-history" class="nav-link">
+                <a href="/condition-history" class="nav-link {% if request.url.path.startswith('/condition-history') %}active{% endif %}">
                     <span class="nav-icon">▤</span>
                     <span>Condition History</span>
                 </a>
@@ -117,6 +133,7 @@
             </div>
 
         </nav>
+
 
         <!-- SIDEBAR FOOTER -->
         <div class="sidebar-footer">
@@ -134,7 +151,9 @@
         <header class="topbar">
 
             <div class="topbar-left">
-                <span class="topbar-label">MUSEUM COLLECTION MANAGEMENT SYSTEM</span>
+                <span class="topbar-label">
+                    MUSEUM COLLECTION MANAGEMENT SYSTEM
+                </span>
             </div>
 
             <div class="topbar-right">
@@ -164,6 +183,7 @@
         </footer>
 
     </div>
+
 
     {% block extra_js %}{% endblock %}
 

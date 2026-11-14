@@ -26,3 +26,9 @@ app.include_router(pages_router)
 
 from app.routes.collections import router as collections_router
 app.include_router(collections_router)
+
+from app.routes.met_import import router as met_import_router
+app.include_router(met_import_router)
+
+from app.routes.artifacts import router as artifacts_router
+app.include_router(artifacts_router)
