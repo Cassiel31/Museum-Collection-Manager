@@ -17,6 +17,11 @@ from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from datetime import date
+from fastapi import Form
+from fastapi.responses import RedirectResponse
+from app.services.exhibitions import create_exhibition
+
 router = APIRouter(
     prefix="/api/exhibitions",
     tags=["Exhibitions"]
@@ -166,4 +171,63 @@ def exhibitions_page(request: Request):
         request=request,
         name="exhibitions/list.html",
         context={"exhibitions": exhibitions}
+    )
+
+@page_router.get("/new", response_class=HTMLResponse)
+def new_exhibition_page(request: Request):
+    """Display the new exhibition form."""
+    return templates.TemplateResponse(
+        request=request,
+        name="exhibitions/create.html",
+        context={}
+    )
+
+
+@page_router.post("/new")
+def submit_new_exhibition(
+    request: Request,
+    exhibition_name: str = Form(...),
+    description: str = Form(""),
+    location: str = Form(""),
+    start_date: date = Form(...),
+    end_date: date = Form(...),
+    status: str = Form("Planned")
+):
+    """Process the new exhibition form."""
+
+    error = None
+
+    if not exhibition_name.strip():
+        error = "Exhibition name is required."
+    elif len(exhibition_name) > 200:
+        error = "Exhibition name cannot exceed 200 characters."
+    elif end_date <= start_date:
+        error = "End date must be after start date."
+    elif status not in {
+        "Planned", "Ongoing", "Completed", "Cancelled"
+    }:
+        error = "Invalid exhibition status."
+
+    if error:
+        return templates.TemplateResponse(
+            request=request,
+            name="exhibitions/create.html",
+            context={"error": error},
+            status_code=400
+        )
+
+    exhibition_data = {
+        "exhibition_name": exhibition_name.strip(),
+        "description": description,
+        "location": location,
+        "start_date": start_date.isoformat(),
+        "end_date": end_date.isoformat(),
+        "status": status
+    }
+
+    create_exhibition(exhibition_data)
+
+    return RedirectResponse(
+        url="/exhibitions/",
+        status_code=303
     )
