@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Staff Management | The Archive{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div>
+        <h1>Staff Management</h1>
+        <p>Manage museum personnel and conservation team members.</p>
+    </div>
+</section>
+
+<section class="content-section">
+    <h2>Staff Directory</h2>
+
+    {% if staff %}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Date Joined</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for member in staff %}
+            <tr>
+                <td>{{ member.full_name }}</td>
+                <td>{{ member.email }}</td>
+                <td>{{ member.phone or "Not provided" }}</td>
+                <td>{{ member.role }}</td>
+                <td>{{ member.date_joined or "Not recorded" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No staff members found.</p>
+    {% endif %}
+</section>
+
+{% endblock %}

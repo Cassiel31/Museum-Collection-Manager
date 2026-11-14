@@ -26,3 +26,16 @@ app.include_router(pages_router)
 
 from app.routes.collections import router as collections_router
 app.include_router(collections_router)
+
+from app.routes.conservation_pages import router as conservation_pages_router
+app.include_router(conservation_pages_router)
+
+
+# Conservation API routers
+from app.routes.staff import router as staff_router
+from app.routes.restoration import router as restoration_router
+from app.routes.condition import router as condition_router
+
+app.include_router(staff_router)
+app.include_router(restoration_router)
+app.include_router(condition_router)
