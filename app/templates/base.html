@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}The Archive | Museum Collections{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+<link rel="stylesheet" href="/static/css/global.css">
+<link rel="stylesheet" href="/static/css/layout.css">
+<link rel="stylesheet" href="/static/css/dashboard.css">
+
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                <span>⌂</span>
+            </div>
+
+            <h1>THE ARCHIVE</h1>
+            <p>MUSEUM COLLECTIONS</p>
+
+            <div class="brand-divider"></div>
+
+        </div>
+
+        <!-- NAVIGATION -->
+        <nav class="sidebar-nav">
+
+            <div class="nav-section">
+
+                <p class="nav-heading">COLLECTIONS</p>
+
+                <a href="/" class="nav-link">
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="/artifacts" class="nav-link">
+                    <span class="nav-icon">▧</span>
+                    <span>Artifacts</span>
+                </a>
+
+                <a href="/artists" class="nav-link">
+                    <span class="nav-icon">♙</span>
+                    <span>Artists & Creators</span>
+                </a>
+
+                <a href="/categories" class="nav-link">
+                    <span class="nav-icon">▱</span>
+                    <span>Categories</span>
+                </a>
+
+                <a href="/acquisitions" class="nav-link">
+                    <span class="nav-icon">▤</span>
+                    <span>Acquisitions</span>
+                </a>
+
+            </div>
+
+            <div class="nav-section">
+
+                <p class="nav-heading">EXHIBITIONS</p>
+
+                <a href="/exhibitions" class="nav-link">
+                    <span class="nav-icon">▣</span>
+                    <span>Exhibitions</span>
+                </a>
+
+                <a href="/loans" class="nav-link">
+                    <span class="nav-icon">⇄</span>
+                    <span>Loans</span>
+                </a>
+
+                <a href="/institutions" class="nav-link">
+                    <span class="nav-icon">⌂</span>
+                    <span>Institutions</span>
+                </a>
+
+            </div>
+
+            <div class="nav-section">
+
+                <p class="nav-heading">CONSERVATION</p>
+
+                <a href="/restorations" class="nav-link">
+                    <span class="nav-icon">❧</span>
+                    <span>Restorations</span>
+                </a>
+
+                <a href="/staff" class="nav-link">
+                    <span class="nav-icon">♙</span>
+                    <span>Staff</span>
+                </a>
+
+                <a href="/condition-history" class="nav-link">
+                    <span class="nav-icon">▤</span>
+                    <span>Condition History</span>
+                </a>
+
+            </div>
+
+        </nav>
+
+        <!-- SIDEBAR FOOTER -->
+        <div class="sidebar-footer">
+            <p>THE ARCHIVE</p>
+            <span>A COLLECTION OF HISTORIES</span>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN WEBSITE AREA -->
+    <div class="main-wrapper">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+
+            <div class="topbar-left">
+                <span class="topbar-label">MUSEUM COLLECTION MANAGEMENT SYSTEM</span>
+            </div>
+
+            <div class="topbar-right">
+                <span class="topbar-date">
+                    COLLECTIONS & RECORDS
+                </span>
+
+                <div class="profile-icon">C</div>
+            </div>
+
+        </header>
+
+
+        <!-- PAGE CONTENT -->
+        <main class="main-content">
+
+            {% block content %}
+            {% endblock %}
+
+        </main>
+
+
+        <!-- FOOTER -->
+        <footer class="main-footer">
+            <span>THE ARCHIVE</span>
+            <span>PRESERVING THE PAST, RECORDING THE PRESENT.</span>
+        </footer>
+
+    </div>
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

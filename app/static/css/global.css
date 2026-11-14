@@ -1,0 +1,81 @@
+
+/* =================================
+   THE ARCHIVE — GLOBAL DESIGN
+================================= */
+
+/* COLOUR PALETTE */
+
+:root {
+    --bistre: #210100;
+    --goldfinch: #E6A341;
+    --butter: #FECE79;
+    --indian-red: #B14A36;
+    --garnet: #8C0902;
+
+    --buttercup-sky: #FFF2B2;
+    --dewy-blue: #A8C6E7;
+    --sunwashed: #FFE08A;
+    --cloud-puff: #FFF7D6;
+    --morning-breeze: #7FA8D6;
+
+    --cream: #FFF9EA;
+    --white: #FFFFFF;
+    --text-dark: #210100;
+    --text-muted: #765D50;
+
+    --border: #E9D8B9;
+}
+
+/* TYPOGRAPHY */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-dark);
+    background-color: var(--cloud-puff);
+    line-height: 1.6;
+}
+
+/* HEADINGS */
+
+h1, h2, h3, h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--bistre);
+}
+
+/* LINKS */
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* BUTTONS */
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+/* IMAGES */
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* SELECTION */
+
+::selection {
+    background-color: var(--goldfinch);
+    color: var(--bistre);
+}

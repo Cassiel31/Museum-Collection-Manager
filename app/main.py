@@ -19,3 +19,10 @@ templates = Jinja2Templates(directory="app/templates")
 @app.get("/health")
 def health_check():
     return {"status": "The Archive is running!"}
+
+from app.routes.pages import router as pages_router
+
+app.include_router(pages_router)
+
+from app.routes.collections import router as collections_router
+app.include_router(collections_router)
