@@ -1,0 +1,56 @@
+
+{% extends "base.html" %}
+
+{% block title %}Exhibitions{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Museum Exhibitions</h1>
+
+    <p>
+        View and manage exhibitions in the museum.
+    </p>
+
+    <a href="/exhibitions/new">
+        Add New Exhibition
+    </a>
+
+    {% if exhibitions %}
+    <table>
+        <thead>
+            <tr>
+                <th>Exhibition Name</th>
+                <th>Location</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for exhibition in exhibitions %}
+            <tr>
+                <td>
+                    {{ exhibition.exhibition_name }}
+                </td>
+                <td>
+                    {{ exhibition.location or "Not specified" }}
+                </td>
+                <td>{{ exhibition.start_date }}</td>
+                <td>{{ exhibition.end_date }}</td>
+                <td>{{ exhibition.status }}</td>
+                <td>
+                    <a href="/exhibitions/{{ exhibition.exhibition_id }}">
+                        View Details
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No exhibitions have been added yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
