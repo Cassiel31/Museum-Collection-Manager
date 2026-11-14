@@ -1,0 +1,82 @@
+
+{% extends "base.html" %}
+
+{% block title %}Add New Exhibition{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Add New Exhibition</h1>
+
+    <p>Enter the details of the new museum exhibition.</p>
+
+    {% if error %}
+    <p role="alert">{{ error }}</p>
+    {% endif %}
+
+    <form action="/exhibitions/new" method="post">
+        <div>
+            <label for="exhibition_name">Exhibition Name</label>
+            <input
+                type="text"
+                id="exhibition_name"
+                name="exhibition_name"
+                maxlength="200"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="description">Description</label>
+            <textarea
+                id="description"
+                name="description"
+                rows="4"
+            ></textarea>
+        </div>
+
+        <div>
+            <label for="location">Location</label>
+            <input
+                type="text"
+                id="location"
+                name="location"
+                maxlength="200"
+            >
+        </div>
+
+        <div>
+            <label for="start_date">Start Date</label>
+            <input
+                type="date"
+                id="start_date"
+                name="start_date"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="end_date">End Date</label>
+            <input
+                type="date"
+                id="end_date"
+                name="end_date"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="Planned">Planned</option>
+                <option value="Ongoing">Ongoing</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+
+        <button type="submit">Create Exhibition</button>
+
+        <a href="/exhibitions/">Cancel</a>
+    </form>
+</section>
+{% endblock %}
