@@ -13,6 +13,10 @@ from app.services.exhibitions import (
     get_exhibition_by_id,
 )
 
+from fastapi import Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
 router = APIRouter(
     prefix="/api/exhibitions",
     tags=["Exhibitions"]
@@ -141,3 +145,25 @@ def unassign_artifact(
     return {
         "message": "Artifact removed from exhibition successfully"
     }
+
+
+# HTML page routes
+page_router = APIRouter(
+    prefix="/exhibitions",
+    tags=["Exhibition Pages"]
+)
+
+templates = Jinja2Templates(directory="app/templates")
+
+
+@page_router.get("/", response_class=HTMLResponse)
+def exhibitions_page(request: Request):
+    """Render the exhibition listing page."""
+
+    exhibitions = get_all_exhibitions()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="exhibitions/list.html",
+        context={"exhibitions": exhibitions}
+    )
