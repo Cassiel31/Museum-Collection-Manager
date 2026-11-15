@@ -23,6 +23,14 @@ from fastapi.responses import RedirectResponse
 from app.services.exhibitions import create_exhibition
 
 from app.services.exhibitions import get_exhibition_artifacts
+from datetime import date
+from uuid import UUID
+from fastapi import Request, Form, HTTPException
+from fastapi.responses import HTMLResponse, RedirectResponse
+from app.services.exhibitions import (
+    get_exhibition_by_id,
+    update_exhibition,
+)
 
 router = APIRouter(
     prefix="/api/exhibitions",
@@ -258,4 +266,99 @@ def exhibition_details_page(
             "exhibition": exhibition,
             "artifacts": artifacts
         }
+    )
+
+
+@page_router.get(
+    "/{exhibition_id}/edit",
+    response_class=HTMLResponse
+)
+def edit_exhibition_page(
+    request: Request,
+    exhibition_id: UUID
+):
+    """Display the exhibition editing form."""
+
+    exhibition = get_exhibition_by_id(str(exhibition_id))
+
+    if exhibition is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Exhibition not found"
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="exhibitions/edit.html",
+        context={"exhibition": exhibition}
+    )
+
+
+@page_router.post("/{exhibition_id}/edit")
+def submit_exhibition_edit(
+    request: Request,
+    exhibition_id: UUID,
+    exhibition_name: str = Form(...),
+    description: str = Form(""),
+    location: str = Form(""),
+    start_date: date = Form(...),
+    end_date: date = Form(...),
+    status: str = Form("Planned")
+):
+    """Validate and save exhibition changes."""
+
+    existing = get_exhibition_by_id(str(exhibition_id))
+
+    if existing is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Exhibition not found"
+        )
+
+    error = None
+
+    if not exhibition_name.strip():
+        error = "Exhibition name is required."
+    elif len(exhibition_name) > 200:
+        error = "Exhibition name cannot exceed 200 characters."
+    elif len(location) > 200:
+        error = "Location cannot exceed 200 characters."
+    elif end_date <= start_date:
+        error = "End date must be after start date."
+    elif status not in {
+        "Planned", "Ongoing", "Completed", "Cancelled"
+    }:
+        error = "Invalid exhibition status."
+
+    exhibition_data = {
+        "exhibition_id": str(exhibition_id),
+        "exhibition_name": exhibition_name.strip(),
+        "description": description,
+        "location": location,
+        "start_date": start_date.isoformat(),
+        "end_date": end_date.isoformat(),
+        "status": status
+    }
+
+    if error:
+        return templates.TemplateResponse(
+            request=request,
+            name="exhibitions/edit.html",
+            context={
+                "exhibition": exhibition_data,
+                "error": error
+            },
+            status_code=400
+        )
+
+    exhibition_data.pop("exhibition_id")
+
+    update_exhibition(
+        str(exhibition_id),
+        exhibition_data
+    )
+
+    return RedirectResponse(
+        url=f"/exhibitions/{exhibition_id}",
+        status_code=303
     )
