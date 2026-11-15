@@ -1,0 +1,59 @@
+
+{% extends "base.html" %}
+
+{% block title %}Exhibition Details{% endblock %}
+
+{% block content %}
+<section>
+    <h1>{{ exhibition.exhibition_name }}</h1>
+
+    <p>{{ exhibition.description or "No description provided." }}</p>
+
+    <h2>Exhibition Information</h2>
+
+    <dl>
+        <dt>Location</dt>
+        <dd>{{ exhibition.location or "Not specified" }}</dd>
+
+        <dt>Start Date</dt>
+        <dd>{{ exhibition.start_date }}</dd>
+
+        <dt>End Date</dt>
+        <dd>{{ exhibition.end_date }}</dd>
+
+        <dt>Status</dt>
+        <dd>{{ exhibition.status }}</dd>
+    </dl>
+
+    <h2>Assigned Artifacts</h2>
+
+    {% if artifacts %}
+    <table>
+        <thead>
+            <tr>
+                <th>Artifact Title</th>
+                <th>Artifact ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in artifacts %}
+            <tr>
+                <td>
+                    {{ assignment.artifacts.title }}
+                </td>
+                <td>
+                    {{ assignment.artifact_id }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No artifacts have been assigned to this exhibition.</p>
+    {% endif %}
+
+    <p>
+        <a href="/exhibitions/">Back to Exhibitions</a>
+    </p>
+</section>
+{% endblock %}
