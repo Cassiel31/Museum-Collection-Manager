@@ -22,6 +22,8 @@ from fastapi import Form
 from fastapi.responses import RedirectResponse
 from app.services.exhibitions import create_exhibition
 
+from app.services.exhibitions import get_exhibition_artifacts
+
 router = APIRouter(
     prefix="/api/exhibitions",
     tags=["Exhibitions"]
@@ -230,4 +232,30 @@ def submit_new_exhibition(
     return RedirectResponse(
         url="/exhibitions/",
         status_code=303
+    )
+
+@page_router.get("/{exhibition_id}", response_class=HTMLResponse)
+def exhibition_details_page(
+    request: Request,
+    exhibition_id: UUID
+):
+    """Display exhibition information and assigned artifacts."""
+
+    exhibition = get_exhibition_by_id(str(exhibition_id))
+
+    if exhibition is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Exhibition not found"
+        )
+
+    artifacts = get_exhibition_artifacts(str(exhibition_id))
+
+    return templates.TemplateResponse(
+        request=request,
+        name="exhibitions/details.html",
+        context={
+            "exhibition": exhibition,
+            "artifacts": artifacts
+        }
     )
