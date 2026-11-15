@@ -27,6 +27,32 @@
 
     <h2>Assigned Artifacts</h2>
 
+<h3>Assign an Artifact</h3>
+
+{% if assignment_error %}
+<p role="alert">{{ assignment_error }}</p>
+{% endif %}
+
+<form
+    action="/exhibitions/{{ exhibition.exhibition_id }}/artifacts"
+    method="post"
+>
+    <div>
+        <label for="artifact_id">Artifact ID</label>
+        <input
+            type="text"
+            id="artifact_id"
+            name="artifact_id"
+            placeholder="Enter artifact UUID"
+            required
+        >
+    </div>
+
+    <button type="submit">
+        Assign Artifact
+    </button>
+</form>
+
     {% if artifacts %}
     <table>
         <thead>
