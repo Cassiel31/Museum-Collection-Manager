@@ -59,6 +59,7 @@
             <tr>
                 <th>Artifact Title</th>
                 <th>Artifact ID</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -69,6 +70,18 @@
                 </td>
                 <td>
                     {{ assignment.artifact_id }}
+
+<td>
+    <form
+        action="/exhibitions/{{ exhibition.exhibition_id }}/artifacts/{{ assignment.artifact_id }}/remove"
+        method="post"
+    >
+        <button type="submit">
+            Remove
+        </button>
+    </form>
+</td>
+
                 </td>
             </tr>
             {% endfor %}
