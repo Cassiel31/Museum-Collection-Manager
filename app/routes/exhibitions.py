@@ -32,6 +32,15 @@ from app.services.exhibitions import (
     update_exhibition,
 )
 
+from uuid import UUID
+from fastapi import Form
+from fastapi.responses import RedirectResponse
+from app.services.exhibitions import (
+    assign_artifact_to_exhibition,
+    get_exhibition_artifacts,
+    get_exhibition_by_id,
+)
+from postgrest.exceptions import APIError
 router = APIRouter(
     prefix="/api/exhibitions",
     tags=["Exhibitions"]
@@ -357,6 +366,59 @@ def submit_exhibition_edit(
         str(exhibition_id),
         exhibition_data
     )
+
+    return RedirectResponse(
+        url=f"/exhibitions/{exhibition_id}",
+        status_code=303
+    )
+
+@page_router.post("/{exhibition_id}/artifacts")
+def submit_artifact_assignment(
+    request: Request,
+    exhibition_id: UUID,
+    artifact_id: UUID = Form(...)
+):
+    """Assign an artifact to an exhibition."""
+
+    exhibition = get_exhibition_by_id(str(exhibition_id))
+
+    if exhibition is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Exhibition not found"
+        )
+
+    try:
+        assign_artifact_to_exhibition(
+            str(exhibition_id),
+            str(artifact_id)
+        )
+
+    except APIError as exc:
+        # PostgreSQL foreign-key or unique-constraint errors
+        if exc.code not in {"23503", "23505"}:
+            raise
+
+        message = (
+            "Artifact not found."
+            if exc.code == "23503"
+            else "This artifact is already assigned."
+        )
+
+        artifacts = get_exhibition_artifacts(
+            str(exhibition_id)
+        )
+
+        return templates.TemplateResponse(
+            request=request,
+            name="exhibitions/details.html",
+            context={
+                "exhibition": exhibition,
+                "artifacts": artifacts,
+                "assignment_error": message
+            },
+            status_code=400
+        )
 
     return RedirectResponse(
         url=f"/exhibitions/{exhibition_id}",
