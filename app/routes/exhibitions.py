@@ -424,3 +424,36 @@ def submit_artifact_assignment(
         url=f"/exhibitions/{exhibition_id}",
         status_code=303
     )
+
+@page_router.post(
+    "/{exhibition_id}/artifacts/{artifact_id}/remove"
+)
+def remove_exhibition_artifact(
+    exhibition_id: UUID,
+    artifact_id: UUID
+):
+    """Remove an artifact from an exhibition."""
+
+    exhibition = get_exhibition_by_id(str(exhibition_id))
+
+    if exhibition is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Exhibition not found"
+        )
+
+    removed = remove_artifact_from_exhibition(
+        str(exhibition_id),
+        str(artifact_id)
+    )
+
+    if not removed:
+        raise HTTPException(
+            status_code=404,
+            detail="Artifact assignment not found"
+        )
+
+    return RedirectResponse(
+        url=f"/exhibitions/{exhibition_id}",
+        status_code=303
+    )
