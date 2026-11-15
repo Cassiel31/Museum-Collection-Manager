@@ -1,0 +1,101 @@
+
+{% extends "base.html" %}
+
+{% block title %}Edit Exhibition{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Edit Exhibition</h1>
+
+    <p>Update the information for this exhibition.</p>
+
+    {% if error %}
+    <p role="alert">{{ error }}</p>
+    {% endif %}
+
+    <form
+        action="/exhibitions/{{ exhibition.exhibition_id }}/edit"
+        method="post"
+    >
+        <div>
+            <label for="exhibition_name">Exhibition Name</label>
+            <input
+                type="text"
+                id="exhibition_name"
+                name="exhibition_name"
+                value="{{ exhibition.exhibition_name }}"
+                maxlength="200"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="description">Description</label>
+            <textarea
+                id="description"
+                name="description"
+                rows="4"
+            >{{ exhibition.description or "" }}</textarea>
+        </div>
+
+        <div>
+            <label for="location">Location</label>
+            <input
+                type="text"
+                id="location"
+                name="location"
+                value="{{ exhibition.location or '' }}"
+                maxlength="200"
+            >
+        </div>
+
+        <div>
+            <label for="start_date">Start Date</label>
+            <input
+                type="date"
+                id="start_date"
+                name="start_date"
+                value="{{ exhibition.start_date }}"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="end_date">End Date</label>
+            <input
+                type="date"
+                id="end_date"
+                name="end_date"
+                value="{{ exhibition.end_date }}"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                {% for option in [
+                    "Planned",
+                    "Ongoing",
+                    "Completed",
+                    "Cancelled"
+                ] %}
+                <option
+                    value="{{ option }}"
+                    {% if exhibition.status == option %}selected{% endif %}
+                >
+                    {{ option }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit">Save Changes</button>
+
+        <a href="/exhibitions/{{ exhibition.exhibition_id }}">
+            Cancel
+        </a>
+    </form>
+</section>
+{% endblock %}
+
