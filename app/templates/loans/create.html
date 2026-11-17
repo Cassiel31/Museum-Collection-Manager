@@ -1,0 +1,91 @@
+
+{% extends "base.html" %}
+
+{% block title %}Register New Loan{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Register New Loan</h1>
+
+    <p>Enter the details of the artifact loan.</p>
+
+    {% if error %}
+    <p role="alert">{{ error }}</p>
+    {% endif %}
+
+    <form action="/loans/new" method="post">
+
+        <div>
+            <label for="artifact_id">Artifact ID</label>
+            <input
+                type="text"
+                id="artifact_id"
+                name="artifact_id"
+                placeholder="Enter artifact UUID"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="institution_id">Borrowing Institution</label>
+            <select
+                id="institution_id"
+                name="institution_id"
+                required
+            >
+                <option value="">Select an institution</option>
+
+                {% for institution in institutions %}
+                <option value="{{ institution.institution_id }}">
+                    {{ institution.institution_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="loan_date">Loan Date</label>
+            <input
+                type="date"
+                id="loan_date"
+                name="loan_date"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="expected_return_date">
+                Expected Return Date
+            </label>
+            <input
+                type="date"
+                id="expected_return_date"
+                name="expected_return_date"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="status">Loan Status</label>
+            <select id="status" name="status">
+                <option value="Pending">Pending</option>
+                <option value="Active">Active</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="notes">Notes</label>
+            <textarea
+                id="notes"
+                name="notes"
+                rows="4"
+            ></textarea>
+        </div>
+
+        <button type="submit">Register Loan</button>
+
+        <a href="/loans/">Cancel</a>
+
+    </form>
+</section>
+{% endblock %}
