@@ -1,0 +1,32 @@
+
+{% extends "base.html" %}
+
+{% block title %}Delete Exhibition{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Delete Exhibition</h1>
+
+    <p>
+        Are you sure you want to permanently delete
+        <strong>{{ exhibition.exhibition_name }}</strong>?
+    </p>
+
+    <p>
+        This action cannot be undone.
+    </p>
+
+    <form
+        action="/exhibitions/{{ exhibition.exhibition_id }}/delete"
+        method="post"
+    >
+        <button type="submit">
+            Yes, Delete Exhibition
+        </button>
+    </form>
+
+    <a href="/exhibitions/{{ exhibition.exhibition_id }}">
+        Cancel
+    </a>
+</section>
+{% endblock %}

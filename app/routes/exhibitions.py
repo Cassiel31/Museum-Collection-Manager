@@ -39,6 +39,7 @@ from app.services.exhibitions import (
     assign_artifact_to_exhibition,
     get_exhibition_artifacts,
     get_exhibition_by_id,
+     delete_exhibition,
 )
 from postgrest.exceptions import APIError
 router = APIRouter(
@@ -455,5 +456,55 @@ def remove_exhibition_artifact(
 
     return RedirectResponse(
         url=f"/exhibitions/{exhibition_id}",
+        status_code=303
+    )
+
+@page_router.get(
+    "/{exhibition_id}/delete",
+    response_class=HTMLResponse
+)
+def confirm_exhibition_deletion(
+    request: Request,
+    exhibition_id: UUID
+):
+    """Display the exhibition deletion confirmation page."""
+
+    exhibition = get_exhibition_by_id(str(exhibition_id))
+
+    if exhibition is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Exhibition not found"
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="exhibitions/delete.html",
+        context={"exhibition": exhibition}
+    )
+
+
+@page_router.post("/{exhibition_id}/delete")
+def submit_exhibition_deletion(exhibition_id: UUID):
+    """Delete an exhibition after confirmation."""
+
+    exhibition = get_exhibition_by_id(str(exhibition_id))
+
+    if exhibition is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Exhibition not found"
+        )
+
+    deleted = delete_exhibition(str(exhibition_id))
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Exhibition could not be deleted"
+        )
+
+    return RedirectResponse(
+        url="/exhibitions/",
         status_code=303
     )

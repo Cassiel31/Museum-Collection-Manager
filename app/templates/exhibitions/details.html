@@ -98,11 +98,9 @@
     its record. This action cannot be undone.
 </p>
 
-<form
-    action="/exhibitions/{{ exhibition.exhibition_id }}/delete"
-    method="post"
-
->
+<a href="/exhibitions/{{ exhibition.exhibition_id }}/delete">
+    Delete Exhibition
+</a>
     <button type="submit">
         Delete Exhibition
     </button>
