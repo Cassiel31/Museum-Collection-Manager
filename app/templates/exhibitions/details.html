@@ -91,6 +91,23 @@
     <p>No artifacts have been assigned to this exhibition.</p>
     {% endif %}
 
+<h2>Delete Exhibition</h2>
+
+<p>
+    Deleting this exhibition will permanently remove
+    its record. This action cannot be undone.
+</p>
+
+<form
+    action="/exhibitions/{{ exhibition.exhibition_id }}/delete"
+    method="post"
+
+>
+    <button type="submit">
+        Delete Exhibition
+    </button>
+</form>
+
     <p>
         <a href="/exhibitions/">Back to Exhibitions</a>
     </p>
