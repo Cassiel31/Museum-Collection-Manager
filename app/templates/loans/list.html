@@ -1,0 +1,59 @@
+
+{% extends "base.html" %}
+
+{% block title %}Museum Loans{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Museum Loans</h1>
+
+    <p>
+        View and manage artifacts loaned to other institutions.
+    </p>
+
+    <p>
+        <a href="/loans/new">Register New Loan</a>
+    </p>
+
+    {% if loans %}
+    <table>
+        <thead>
+            <tr>
+                <th>Artifact</th>
+                <th>Institution</th>
+                <th>Loan Date</th>
+                <th>Expected Return</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for loan in loans %}
+            <tr>
+                <td>
+                    {{ loan.artifacts.title if loan.artifacts else "Unknown Artifact" }}
+                </td>
+
+                <td>
+                    {{ loan.institutions.institution_name if loan.institutions else "Unknown Institution" }}
+                </td>
+
+                <td>{{ loan.loan_date }}</td>
+                <td>{{ loan.expected_return_date }}</td>
+                <td>{{ loan.status }}</td>
+
+                <td>
+                    <a href="/loans/{{ loan.loan_id }}">
+                        View Details
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No loan records have been added yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
