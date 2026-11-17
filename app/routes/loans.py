@@ -15,6 +15,10 @@ from app.services.loans import create_loan
 from app.services.loans import update_loan
 from typing import Literal
 
+from fastapi import Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
 router = APIRouter(
     prefix="/api/loans",
     tags=["Loans"]
@@ -141,3 +145,24 @@ def edit_loan(loan_id: UUID, loan: LoanUpdate):
     updated = update_loan(str(loan_id), changes)
 
     return updated
+
+# HTML page routes
+page_router = APIRouter(
+    prefix="/loans",
+    tags=["Loan Pages"]
+)
+
+templates = Jinja2Templates(directory="app/templates")
+
+
+@page_router.get("/", response_class=HTMLResponse)
+def loans_page(request: Request):
+    """Display the museum loan listing page."""
+
+    loans = get_all_loans()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="loans/list.html",
+        context={"loans": loans}
+    )
