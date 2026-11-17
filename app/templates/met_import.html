@@ -1,0 +1,134 @@
+
+{% extends "base.html" %}
+
+{% block title %}Import Artwork | The Archive{% endblock %}
+
+{% block content %}
+
+<section class="welcome">
+    <p class="eyebrow">THE ARCHIVE / EXTERNAL COLLECTIONS</p>
+    <h1>Discover Artifacts.</h1>
+    <p class="subtitle">
+        Explore the Metropolitan Museum of Art and bring its treasures into our collection.
+    </p>
+</section>
+
+<section class="met-search-section">
+
+    <form action="/met-import" method="get" class="met-search-form">
+        <input
+            type="text"
+            name="q"
+            placeholder="Search paintings, vases, sculptures..."
+            value="{{ query }}"
+            required
+        >
+
+        <button type="submit">Search the Met</button>
+    </form>
+
+    {% if error %}
+        <p class="met-error">{{ error }}</p>
+    {% endif %}
+
+    {% if message == "imported" %}
+        <p class="met-success">
+            Artwork import completed. Check your artifact collection.
+        </p>
+    {% endif %}
+
+</section>
+
+
+{% if query %}
+
+<section class="met-results-section">
+
+    <div class="met-results-heading">
+        <h2>Search Results</h2>
+        <p>Results for "{{ query }}"</p>
+    </div>
+
+    {% if artworks %}
+
+    <div class="met-artifact-grid">
+
+        {% for artwork in artworks %}
+
+        <article class="met-artifact-card">
+
+            <div class="met-image-wrapper">
+                <img
+                    src="{{ artwork.primaryImageSmall }}"
+                    alt="{{ artwork.title }}"
+                    class="met-artifact-image"
+                >
+            </div>
+
+            <div class="met-artifact-info">
+
+                <p class="met-object-id">
+                    MET OBJECT / {{ artwork.objectID }}
+                </p>
+
+                <h3>{{ artwork.title }}</h3>
+
+                <p class="met-artist">
+                    {{ artwork.artistDisplayName or "Unknown Artist" }}
+                </p>
+
+                <div class="met-details">
+                    <p>{{ artwork.objectDate or "Date unknown" }}</p>
+                    <p>{{ artwork.medium or "Medium unknown" }}</p>
+                </div>
+
+                {% if artwork.isPublicDomain %}
+                    <span class="met-public-domain">PUBLIC DOMAIN</span>
+                {% endif %}
+
+                <form
+                    action="/met-import/import"
+                    method="post"
+                    class="met-import-form"
+                >
+                    <input
+                        type="hidden"
+                        name="object_id"
+                        value="{{ artwork.objectID }}"
+                    >
+
+                    <button type="submit">
+                        + Import Artifact
+                    </button>
+                </form>
+
+                <a
+                    href="{{ artwork.objectURL }}"
+                    target="_blank"
+                    class="met-external-link"
+                >
+                    View on Met Museum
+                </a>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+        <div class="empty-state">
+            No artworks with photographs were found for this search.
+            Try another keyword.
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endif %}
+
+{% endblock %}

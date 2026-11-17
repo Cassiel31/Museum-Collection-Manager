@@ -1,0 +1,261 @@
+.artifact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.artifact-card {
+    background: #fffaf1;
+    border: 1px solid #e6d3b5;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.artifact-image {
+    width: 100%;
+    height: 240px;
+    object-fit: contain;
+    background: #f3eadb;
+    display: block;
+}
+
+.artifact-image-placeholder {
+    width: 100%;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3eadb;
+    color: #8b7560;
+}
+
+.artifact-info {
+    padding: 18px;
+}
+
+.artifact-info h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 25px;
+    margin: 8px 0;
+}
+
+.artifact-id {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #b14a36;
+}
+
+.artifact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 14px 0;
+    font-size: 13px;
+}
+
+.artifact-view-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #8c0902;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.artifact-view-link:hover {
+    text-decoration: underline;
+}
+
+.artifact-list-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.empty-state {
+    padding: 40px;
+    text-align: center;
+}
+.artifact-detail-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 40px;
+    margin-top: 30px;
+    align-items: start;
+}
+
+.artifact-detail-image img {
+    width: 100%;
+    max-height: 520px;
+    object-fit: contain;
+    background: #f3eadb;
+    border-radius: 8px;
+}
+
+.artifact-detail-info h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    margin: 10px 0 24px;
+}
+
+.artifact-detail-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.artifact-detail-fields span {
+    color: #8c0902;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.artifact-detail-fields p {
+    margin-top: 5px;
+}
+
+.artifact-description {
+    margin: 30px 0;
+}
+
+.artifact-description h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+}
+
+@media (max-width: 800px) {
+    .artifact-detail-container {
+        grid-template-columns: 1fr;
+    }
+}
+.artifact-list-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-artifact-button {
+    background: #8c0902;
+    color: #fffaf1;
+    padding: 12px 22px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.add-artifact-button:hover {
+    background: #210100;
+}
+
+
+/* ================================
+   ADD ARTIFACT FORM
+================================ */
+
+.artifact-form {
+    width: min(760px, 100%);
+    margin-top: 30px;
+    padding: 35px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 28px;
+    background: rgba(255, 248, 232, 0.92);
+    border: 1px solid rgba(230, 163, 65, 0.5);
+    border-radius: 8px;
+    box-shadow: 0 8px 28px rgba(33, 1, 0, 0.08);
+}
+
+.artifact-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.artifact-form label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #5b3025;
+}
+
+.artifact-form input,
+.artifact-form select,
+.artifact-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #d8c5a5;
+    border-radius: 4px;
+    background: #fffdf7;
+    color: #210100;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.artifact-form input:focus,
+.artifact-form select:focus,
+.artifact-form textarea:focus {
+    border-color: #b14a36;
+    box-shadow: 0 0 0 3px rgba(177, 74, 54, 0.12);
+}
+
+.artifact-form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.artifact-form .full-width,
+.artifact-form .form-actions {
+    grid-column: 1 / -1;
+}
+
+.artifact-form .form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    padding-top: 12px;
+    border-top: 1px solid #e5d4b7;
+}
+
+.artifact-form .form-actions a {
+    color: #8c0902;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.artifact-form .form-actions button {
+    padding: 13px 25px;
+    border: none;
+    border-radius: 4px;
+    background: #8c0902;
+    color: #fff8e8;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.artifact-form .form-actions button:hover {
+    background: #b14a36;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 650px) {
+    .artifact-form {
+        grid-template-columns: 1fr;
+        padding: 22px;
+    }
+
+    .artifact-form .full-width,
+    .artifact-form .form-actions {
+        grid-column: 1;
+    }
+}
