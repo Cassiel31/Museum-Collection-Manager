@@ -1,0 +1,43 @@
+
+{% extends "base.html" %}
+
+{% block title %}Loan Details{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Loan Details</h1>
+
+    <dl>
+        <dt>Artifact</dt>
+        <dd>{{ loan.artifacts.title if loan.artifacts else "Unknown" }}</dd>
+
+        <dt>Borrowing Institution</dt>
+        <dd>{{ loan.institutions.institution_name if loan.institutions else "Unknown" }}</dd>
+
+        <dt>Loan Date</dt>
+        <dd>{{ loan.loan_date }}</dd>
+
+        <dt>Expected Return Date</dt>
+        <dd>{{ loan.expected_return_date }}</dd>
+
+        <dt>Actual Return Date</dt>
+        <dd>{{ loan.actual_return_date or "Not returned yet" }}</dd>
+
+        <dt>Status</dt>
+        <dd>{{ loan.status }}</dd>
+
+        <dt>Notes</dt>
+        <dd>{{ loan.notes or "No notes" }}</dd>
+    </dl>
+
+    <p>
+        <a href="/loans/{{ loan.loan_id }}/edit">
+            Update Loan / Record Return
+        </a>
+    </p>
+
+    <p>
+        <a href="/loans/">Back to Loans</a>
+    </p>
+</section>
+{% endblock %}
