@@ -263,3 +263,101 @@ def loan_details_page(request: Request, loan_id: UUID):
         name="loans/details.html",
         context={"loan": loan}
     )
+
+
+@page_router.get(
+    "/{loan_id}/edit",
+    response_class=HTMLResponse
+)
+def edit_loan_page(request: Request, loan_id: UUID):
+    """Display the loan editing form."""
+
+    loan = get_loan_by_id(str(loan_id))
+
+    if loan is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Loan not found"
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="loans/edit.html",
+        context={"loan": loan}
+    )
+
+
+@page_router.post("/{loan_id}/edit")
+def submit_loan_edit(
+    request: Request,
+    loan_id: UUID,
+    expected_return_date: date = Form(...),
+    actual_return_date: date | None = Form(None),
+    status: str = Form(...),
+    notes: str = Form("")
+):
+    """Validate and save loan changes."""
+
+    existing = get_loan_by_id(str(loan_id))
+
+    if existing is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Loan not found"
+        )
+
+    loan_date = date.fromisoformat(existing["loan_date"])
+
+    error = None
+
+    if expected_return_date <= loan_date:
+        error = "Expected return date must be after loan date."
+    elif status not in {
+        "Pending", "Active", "Returned", "Cancelled"
+    }:
+        error = "Invalid loan status."
+    elif actual_return_date and actual_return_date < loan_date:
+        error = "Actual return date cannot be before loan date."
+    elif status == "Returned" and actual_return_date is None:
+        error = "Please enter the actual return date."
+    elif status != "Returned" and actual_return_date is not None:
+        error = "Only returned loans can have an actual return date."
+
+    loan_data = {
+        "expected_return_date": expected_return_date.isoformat(),
+        "actual_return_date": (
+            actual_return_date.isoformat()
+            if actual_return_date else None
+        ),
+        "status": status,
+        "notes": notes
+    }
+
+    if error:
+        form_loan = {
+            **existing,
+            **loan_data
+        }
+
+        return templates.TemplateResponse(
+            request=request,
+            name="loans/edit.html",
+            context={
+                "loan": form_loan,
+                "error": error
+            },
+            status_code=400
+        )
+
+    updated = update_loan(str(loan_id), loan_data)
+
+    if updated is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Loan not found"
+        )
+
+    return RedirectResponse(
+        url=f"/loans/{loan_id}",
+        status_code=303
+    )
