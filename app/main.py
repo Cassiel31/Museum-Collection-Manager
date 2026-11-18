@@ -26,23 +26,6 @@ from app.routes.staff import router as staff_router
 from app.routes.restoration import router as restoration_router
 from app.routes.condition import router as condition_router
 
-from app.routes.exhibitions import router as exhibitions_router, page_router as exhibitions_page_router
-from app.routes.institutions import router as institutions_router, page_router as institutions_page_router
-from app.routes.loans import router as loans_router, page_router as loans_page_router
-from app.routes.met_museum import router as met_museum_router, page_router as met_museum_page_router
 
-app.include_router(staff_router)
-app.include_router(restoration_router)
-app.include_router(condition_router)
-app.include_router(met_import_router)
-app.include_router(artifacts_router)
-app.include_router(management_router)
-app.include_router(exhibitions_router)
-app.include_router(institutions_router)
-app.include_router(loans_router)
-app.include_router(met_museum_router)
 
-app.include_router(exhibitions_page_router)
-app.include_router(institutions_page_router)
-app.include_router(loans_page_router)
-app.include_router(met_museum_page_router)
+
