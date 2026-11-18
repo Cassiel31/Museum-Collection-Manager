@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block title %}Artists | The Archive{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="/static/css/collection-module.css">{% endblock %}
+{% block content %}<section class="welcome"><p class="eyebrow">THE ARCHIVE / PEOPLE</p><h1>Artists & Creators.</h1><p class="subtitle">The people behind the objects.</p></section>
+<div class="module-toolbar"><h2>{{ artists|length }} artists</h2><a class="module-button" href="/artists/add">+ Add Artist</a></div>
+<div class="module-grid">{% for a in artists %}<article class="module-card"><h3>{{ a.name }}</h3><p>{{ a.nationality or "Nationality unknown" }}</p><p>{{ a.birth_year or "?" }} – {{ a.death_year or "Present" }}</p><a href="/artists/{{ a.artist_id }}/edit">Edit</a><form method="post" action="/artists/{{ a.artist_id }}/delete"><button class="text-button" type="submit">Delete</button></form></article>{% else %}<p>No artists recorded yet.</p>{% endfor %}</div>{% endblock %}
