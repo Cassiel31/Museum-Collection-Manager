@@ -245,3 +245,21 @@ def submit_new_loan(
         url="/loans/",
         status_code=303
     )
+
+@page_router.get("/{loan_id}", response_class=HTMLResponse)
+def loan_details_page(request: Request, loan_id: UUID):
+    """Display the details of an individual loan."""
+
+    loan = get_loan_by_id(str(loan_id))
+
+    if loan is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Loan not found"
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="loans/details.html",
+        context={"loan": loan}
+    )
