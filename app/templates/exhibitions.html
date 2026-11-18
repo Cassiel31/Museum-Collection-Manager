@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block title %}Exhibitions | The Archive{% endblock %}{% block content %}
+<section class="welcome"><p class="eyebrow">THE ARCHIVE / PUBLIC PROGRAMME</p><h1>Exhibitions.</h1><p class="subtitle">Plan and manage exhibitions using artifacts already in the museum collection.</p></section>
+<div class="module-toolbar"><h2>{{ exhibitions|length }} exhibitions</h2><a class="module-button" href="/exhibitions/add">+ New Exhibition</a></div>
+<div class="module-grid">{% for e in exhibitions %}<article class="module-card"><p class="eyebrow">{{ e.status }}</p><h3><a href="/exhibitions/{{ e.exhibition_id }}">{{ e.exhibition_name }}</a></h3><p>{{ e.location or 'Location not recorded' }}</p><p>{{ e.start_date }} — {{ e.end_date }}</p><p>{{ e.description or '' }}</p><a href="/exhibitions/{{ e.exhibition_id }}">View exhibition →</a></article>{% else %}<p>No exhibitions recorded yet.</p>{% endfor %}</div>{% endblock %}

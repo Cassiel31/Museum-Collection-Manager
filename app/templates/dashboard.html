@@ -4,7 +4,7 @@
 {% block content %}
 <section class="welcome"><p class="eyebrow">COLLECTION OVERVIEW / 001</p><h1>Good morning, Curator.</h1><p class="subtitle">A record of things worth remembering.</p></section>
 <section class="statistics">
-<div class="stat-card"><h2>{{ artifact_count }}</h2><p>ARTIFACTS</p></div><div class="stat-card"><h2>{{ artist_count }}</h2><p>ARTISTS</p></div><div class="stat-card"><h2>{{ exhibition_count }}</h2><p>EXHIBITIONS</p></div><div class="stat-card"><h2>{{ loan_count }}</h2><p>LOANS</p></div>
+<div class="stat-card"><h2>{{ artifact_count }}</h2><p>ARTIFACTS</p></div><div class="stat-card"><h2>{{ artist_count }}</h2><p>ARTISTS</p></div><div class="stat-card"><h2>{{ category_count }}</h2><p>CATEGORIES</p></div><div class="stat-card"><h2>{{ collection_count }}</h2><p>COLLECTIONS</p></div><div class="stat-card"><h2>{{ acquisition_count }}</h2><p>ACQUISITIONS</p></div><div class="stat-card"><h2>{{ exhibition_count }}</h2><p>EXHIBITIONS</p></div><div class="stat-card"><h2>{{ loan_count }}</h2><p>LOANS</p></div>
 </section>
 <section class="dashboard-panels">
 <div class="panel"><h2>Featured Collections</h2><div class="module-grid">{% for c in featured_collections %}<article class="module-card">{% if c.cover_image %}<img class="module-image" src="{{ c.cover_image }}" alt="{{ c.name }}">{% endif %}<h3><a href="/collections/{{ c.collection_id }}">{{ c.name }}</a></h3><p>{{ c.artifact_count }} artifacts</p></article>{% else %}<p>Star and feature a collection to display it here.</p>{% endfor %}</div></div>

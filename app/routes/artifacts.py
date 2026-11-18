@@ -63,4 +63,31 @@ async def delete_artifact(artifact_id: str):
 async def artifact_details(request: Request, artifact_id: str):
     artifact = get_artifact_by_id(artifact_id)
     if not artifact: return HTMLResponse("Artifact not found.", status_code=404)
-    return templates.TemplateResponse(request=request, name="collection/artifact_details.html", context={"artifact":artifact})
+    def related(table, select="*"):
+        try:
+            return supabase.table(table).select(select).eq("artifact_id", artifact_id).execute().data or []
+        except Exception:
+            return []
+
+    collection_links = related("collection_artifacts", "collection_id")
+    exhibition_links = related("exhibition_artifacts", "exhibition_id")
+    collections = []
+    exhibitions = []
+    for link in collection_links:
+        try:
+            rows = supabase.table("collections").select("collection_id,name").eq("collection_id", link["collection_id"]).limit(1).execute().data or []
+            collections.extend(rows)
+        except Exception:
+            pass
+    for link in exhibition_links:
+        try:
+            rows = supabase.table("exhibitions").select("exhibition_id,exhibition_name,status").eq("exhibition_id", link["exhibition_id"]).limit(1).execute().data or []
+            exhibitions.extend(rows)
+        except Exception:
+            pass
+    loans = related("loans", "*, institutions(institution_name)")
+    restorations = related("restorations")
+    condition_history = related("condition_history")
+    return templates.TemplateResponse(request=request, name="collection/artifact_details.html", context={
+        "artifact":artifact, "collections":collections, "exhibitions":exhibitions,
+        "loans":loans, "restorations":restorations, "condition_history":condition_history})

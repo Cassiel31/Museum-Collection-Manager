@@ -20,6 +20,9 @@
     <link rel="stylesheet" href="/static/css/collections.css">
     <link rel="stylesheet" href="/static/css/met_import.css">
 
+    <!-- Exhibitions, Loans, Availability & Institutions -->
+    <link rel="stylesheet" href="/static/css/partnerships.css">
+
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -29,7 +32,6 @@
     <aside class="sidebar">
 
         <div class="brand">
-
             <div class="brand-icon">
                 <span>⌂</span>
             </div>
@@ -38,7 +40,6 @@
             <p>MUSEUM COLLECTIONS</p>
 
             <div class="brand-divider"></div>
-
         </div>
 
         <!-- NAVIGATION -->
@@ -79,13 +80,17 @@
                     <span>My Collections</span>
                 </a>
 
+                <a href="/reports" class="nav-link {% if request.url.path.startswith('/reports') %}active{% endif %}">
+                    <span class="nav-icon">▥</span>
+                    <span>Reports</span>
+                </a>
+
                 <a href="/met-import" class="nav-link {% if request.url.path.startswith('/met-import') %}active{% endif %}">
                     <span class="nav-icon">＋</span>
                     <span>Met Museum Import</span>
                 </a>
 
             </div>
-
 
             <!-- EXHIBITIONS -->
             <div class="nav-section">
@@ -95,6 +100,11 @@
                 <a href="/exhibitions" class="nav-link {% if request.url.path.startswith('/exhibitions') %}active{% endif %}">
                     <span class="nav-icon">▣</span>
                     <span>Exhibitions</span>
+                </a>
+
+                <a href="/availability" class="nav-link {% if request.url.path.startswith('/availability') %}active{% endif %}">
+                    <span class="nav-icon">◉</span>
+                    <span>Availability</span>
                 </a>
 
                 <a href="/loans" class="nav-link {% if request.url.path.startswith('/loans') %}active{% endif %}">
@@ -109,23 +119,27 @@
 
             </div>
 
-
             <!-- CONSERVATION -->
             <div class="nav-section">
 
                 <p class="nav-heading">CONSERVATION</p>
 
-                <a href="/restorations" class="nav-link {% if request.url.path.startswith('/restorations') %}active{% endif %}">
+                <a href="/conservation" class="nav-link {% if request.url.path == '/conservation' %}active{% endif %}">
+                    <span class="nav-icon">✧</span>
+                    <span>Overview</span>
+                </a>
+
+                <a href="/conservation/restorations" class="nav-link {% if request.url.path.startswith('/conservation/restorations') %}active{% endif %}">
                     <span class="nav-icon">❧</span>
                     <span>Restorations</span>
                 </a>
 
-                <a href="/staff" class="nav-link {% if request.url.path.startswith('/staff') %}active{% endif %}">
+                <a href="/conservation/staff" class="nav-link {% if request.url.path.startswith('/conservation/staff') %}active{% endif %}">
                     <span class="nav-icon">♙</span>
                     <span>Staff</span>
                 </a>
 
-                <a href="/condition-history" class="nav-link {% if request.url.path.startswith('/condition-history') %}active{% endif %}">
+                <a href="/conservation/condition-history" class="nav-link {% if request.url.path.startswith('/conservation/condition-history') %}active{% endif %}">
                     <span class="nav-icon">▤</span>
                     <span>Condition History</span>
                 </a>
@@ -134,7 +148,6 @@
 
         </nav>
 
-
         <!-- SIDEBAR FOOTER -->
         <div class="sidebar-footer">
             <p>THE ARCHIVE</p>
@@ -142,7 +155,6 @@
         </div>
 
     </aside>
-
 
     <!-- MAIN WEBSITE AREA -->
     <div class="main-wrapper">
@@ -166,7 +178,6 @@
 
         </header>
 
-
         <!-- PAGE CONTENT -->
         <main class="main-content">
 
@@ -175,7 +186,6 @@
 
         </main>
 
-
         <!-- FOOTER -->
         <footer class="main-footer">
             <span>THE ARCHIVE</span>
@@ -183,7 +193,6 @@
         </footer>
 
     </div>
-
 
     {% block extra_js %}{% endblock %}
 

@@ -26,6 +26,9 @@ async def dashboard(request: Request):
             collection["cover_image"] = sample[0].get("image_url") if sample else None
     except Exception:
         featured, starred, recent = [], [], []
-    context = {"artifact_count":count("artifacts"),"artist_count":count("artists"),"exhibition_count":count("exhibitions"),
-               "loan_count":count("loans"),"featured_collections":featured,"starred_collections":starred,"recent_artifacts":recent}
+    context = {"artifact_count":count("artifacts"),"artist_count":count("artists"),
+               "category_count":count("categories"),"collection_count":count("collections"),
+               "acquisition_count":count("acquisitions"),"exhibition_count":count("exhibitions"),
+               "loan_count":count("loans"),"featured_collections":featured,
+               "starred_collections":starred,"recent_artifacts":recent}
     return templates.TemplateResponse(request=request,name="dashboard.html",context=context)

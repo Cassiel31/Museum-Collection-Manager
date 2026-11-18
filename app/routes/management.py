@@ -139,6 +139,21 @@ async def acquisition_add(artifact_id: str = Form(...), acquisition_type: str = 
         "purchase_price": float(purchase_price) if purchase_price else None, "notes": notes or None}).execute()
     return RedirectResponse("/acquisitions", 303)
 
+@router.get("/acquisitions/{acquisition_id}/edit", response_class=HTMLResponse)
+async def acquisition_edit_page(request: Request, acquisition_id: str):
+    found = find_rows("acquisitions", "acquisition_id", acquisition_id)
+    if not found: return HTMLResponse("Acquisition not found", 404)
+    return templates.TemplateResponse(request=request, name="collection/acquisition_form.html",
+        context={"acquisition": found[0], "artifacts": rows("artifacts", "title")})
+
+@router.post("/acquisitions/{acquisition_id}/edit")
+async def acquisition_edit(acquisition_id: str, artifact_id: str = Form(...), acquisition_type: str = Form(...),
+    acquisition_date: str = Form(...), source_name: str = Form(""), purchase_price: str = Form(""), notes: str = Form("")):
+    supabase.table("acquisitions").update({"artifact_id": artifact_id, "acquisition_type": acquisition_type,
+        "acquisition_date": acquisition_date, "source_name": source_name or None,
+        "purchase_price": float(purchase_price) if purchase_price else None, "notes": notes or None}).eq("acquisition_id", acquisition_id).execute()
+    return RedirectResponse("/acquisitions", 303)
+
 @router.post("/acquisitions/{acquisition_id}/delete")
 async def acquisition_delete(acquisition_id: str):
     supabase.table("acquisitions").delete().eq("acquisition_id", acquisition_id).execute()
@@ -168,7 +183,7 @@ async def collection_add(name: str = Form(...), description: str = Form("")):
     return RedirectResponse("/collections", 303)
 
 @router.get("/collections/{collection_id}", response_class=HTMLResponse)
-async def collection_detail_page(request: Request, collection_id: int, q: str = ""):
+async def collection_detail_page(request: Request, collection_id: str, q: str = ""):
     c = collection_by_id(collection_id)
     if not c: return HTMLResponse("Collection not found", 404)
     artifacts = collection_artifacts(collection_id)
@@ -181,38 +196,38 @@ async def collection_detail_page(request: Request, collection_id: int, q: str = 
         context={"collection": c, "artifacts": artifacts, "q": q})
 
 @router.get("/collections/{collection_id}/edit", response_class=HTMLResponse)
-async def collection_edit_page(request: Request, collection_id: int):
+async def collection_edit_page(request: Request, collection_id: str):
     c = collection_by_id(collection_id)
     if not c: return HTMLResponse("Collection not found", 404)
     return templates.TemplateResponse(request=request, name="collections/collection_form.html", context={"collection": c})
 
 @router.post("/collections/{collection_id}/edit")
-async def collection_edit(collection_id: int, name: str = Form(...), description: str = Form("")):
+async def collection_edit(collection_id: str, name: str = Form(...), description: str = Form("")):
     supabase.table("collections").update({"name": name.strip(), "description": description or None}).eq("collection_id", collection_id).execute()
     return RedirectResponse(f"/collections/{collection_id}", 303)
 
 @router.post("/collections/{collection_id}/delete")
-async def collection_delete(collection_id: int):
+async def collection_delete(collection_id: str):
     supabase.table("collection_artifacts").delete().eq("collection_id", collection_id).execute()
     supabase.table("collections").delete().eq("collection_id", collection_id).execute()
     return RedirectResponse("/collections", 303)
 
 @router.post("/collections/{collection_id}/star")
-async def collection_star(collection_id: int):
+async def collection_star(collection_id: str):
     c = collection_by_id(collection_id)
     if c:
         new_state = not c["is_starred"]
-        supabase.table("collections").update({"is_starred": new_state, "is_featured": new_state}).eq("collection_id", collection_id).execute()
+        supabase.table("collections").update({"is_starred": new_state}).eq("collection_id", collection_id).execute()
     return RedirectResponse("/collections", 303)
 
 @router.post("/collections/{collection_id}/feature")
-async def collection_feature(collection_id: int):
+async def collection_feature(collection_id: str):
     c = collection_by_id(collection_id)
     if c: supabase.table("collections").update({"is_featured": not c["is_featured"]}).eq("collection_id", collection_id).execute()
     return RedirectResponse("/collections", 303)
 
 @router.get("/collections/{collection_id}/add-artifacts", response_class=HTMLResponse)
-async def collection_add_artifacts_page(request: Request, collection_id: int, q: str = ""):
+async def collection_add_artifacts_page(request: Request, collection_id: str, q: str = ""):
     c = collection_by_id(collection_id)
     if not c: return HTMLResponse("Collection not found", 404)
     artifacts = rows("artifacts", "title")
@@ -226,11 +241,34 @@ async def collection_add_artifacts_page(request: Request, collection_id: int, q:
         context={"collection": c, "artifacts": available, "q": q})
 
 @router.post("/collections/{collection_id}/add-artifacts")
-async def collection_add_artifacts(collection_id: int, artifact_ids: list[str] = Form([])):
+async def collection_add_artifacts(collection_id: str, artifact_ids: list[str] = Form([])):
     add_artifacts(collection_id, artifact_ids)
     return RedirectResponse(f"/collections/{collection_id}", 303)
 
 @router.post("/collections/{collection_id}/remove/{artifact_id}")
-async def collection_remove_artifact(collection_id: int, artifact_id: str):
+async def collection_remove_artifact(collection_id: str, artifact_id: str):
     remove_artifact(collection_id, artifact_id)
     return RedirectResponse(f"/collections/{collection_id}", 303)
+
+
+@router.get("/reports", response_class=HTMLResponse)
+async def reports_page(request: Request):
+    def get_rows(table):
+        try: return supabase.table(table).select("*").execute().data or []
+        except Exception: return []
+    artifacts=get_rows("artifacts"); artists=get_rows("artists"); categories=get_rows("categories")
+    collections=get_rows("collections"); acquisitions=get_rows("acquisitions"); exhibitions=get_rows("exhibitions")
+    loans=get_rows("loans"); restorations=get_rows("restorations")
+    category_counts={}
+    for a in artifacts:
+        key=a.get("category_id") or "Uncategorised"; category_counts[key]=category_counts.get(key,0)+1
+    category_names={c.get("category_id"):c.get("category_name") for c in categories}
+    category_summary=[{"name":category_names.get(k,"Uncategorised"),"count":v} for k,v in category_counts.items()]
+    artist_names={a.get("artist_id"):a.get("name") for a in artists}
+    artist_counts={}
+    for artifact in artifacts:
+        key=artifact.get("artist_id") or "Unknown artist"
+        artist_counts[key]=artist_counts.get(key,0)+1
+    artist_summary=[{"name":artist_names.get(k,"Unknown artist"),"count":v} for k,v in artist_counts.items()]
+    context={"counts":{"artifacts":len(artifacts),"artists":len(artists),"categories":len(categories),"collections":len(collections),"acquisitions":len(acquisitions),"exhibitions":len(exhibitions),"loans":len(loans),"restorations":len(restorations)},"category_summary":category_summary,"artist_summary":artist_summary}
+    return templates.TemplateResponse(request=request,name="reports.html",context=context)

@@ -1,19 +1,4 @@
+"""Legacy placeholder. Active collection page handlers live in app.routes.management.
 
-from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from pathlib import Path
-
-router = APIRouter()
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
-
-
-@router.get("/collections", response_class=HTMLResponse)
-async def view_collections(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="collections/collections.html",
-        context={}
-    )
+This module is intentionally not registered by app.main to avoid duplicate /collections routes.
+"""
