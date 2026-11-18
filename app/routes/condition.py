@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import RedirectResponse
 
 from app.models.condition_history import (
     ConditionHistoryCreate,
@@ -18,6 +19,11 @@ router = APIRouter(
     prefix="/condition-history",
     tags=["Conservation - Condition History"]
 )
+
+
+@router.get("", include_in_schema=False)
+def condition_history_page_redirect():
+    return RedirectResponse("/conservation/condition-history", status_code=307)
 
 
 @router.get("/")

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import RedirectResponse
 
 from app.models.staff import StaffCreate, StaffUpdate
 from app.services.staff import (
@@ -13,6 +14,11 @@ router = APIRouter(
     prefix="/staff",
     tags=["Staff Management"]
 )
+
+
+@router.get("", include_in_schema=False)
+def staff_page_redirect():
+    return RedirectResponse("/conservation/staff", status_code=307)
 
 
 @router.get("/")

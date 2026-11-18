@@ -1,47 +1,20 @@
-
 {% extends "base.html" %}
-
 {% block title %}Condition History | The Archive{% endblock %}
-
+{% block extra_css %}<link rel="stylesheet" href="/static/css/conservation.css">{% endblock %}
 {% block content %}
-
-<section class="page-header">
-    <div>
-        <h1>Condition History</h1>
-        <p>Track changes in the physical condition of museum artifacts.</p>
-    </div>
-</section>
-
-<section class="content-section">
-    <h2>Artifact Condition Records</h2>
-
-    {% if history %}
-    <table>
-        <thead>
-            <tr>
-                <th>Artifact ID</th>
-                <th>Previous Condition</th>
-                <th>New Condition</th>
-                <th>Recorded Date</th>
-                <th>Remarks</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% for record in history %}
-            <tr>
-                <td>{{ record.artifact_id }}</td>
-                <td>{{ record.previous_condition }}</td>
-                <td>{{ record.new_condition }}</td>
-                <td>{{ record.recorded_date }}</td>
-                <td>{{ record.remarks or "No remarks" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No condition history records found.</p>
-    {% endif %}
-</section>
-
+<section class="page-header"><div><p class="eyebrow">PRESERVATION LOG</p><h1>Condition History</h1><p>Track and maintain a chronological record of changes in artifact condition.</p></div></section>
+{% if message %}<div class="notice success">{{ message }}</div>{% endif %}{% if error %}<div class="notice error">{{ error }}</div>{% endif %}
+<section class="conservation-panel"><div class="panel-heading"><div><p class="eyebrow">NEW INSPECTION</p><h2>Record Condition Change</h2></div></div>
+{% if artifacts %}<form class="form-grid" method="post" action="/conservation/condition-history/create">
+<label>Artifact<select name="artifact_id" required><option value="">Select artifact</option>{% for artifact in artifacts %}<option value="{{ artifact.artifact_id }}">{{ artifact.title }} · {{ artifact.current_condition or 'Condition unknown' }}</option>{% endfor %}</select></label>
+<label>Inspection date<input type="date" name="recorded_date" required></label>
+<label>Previous condition<select name="previous_condition" required>{% for condition in conditions %}<option value="{{ condition }}">{{ condition }}</option>{% endfor %}</select></label>
+<label>New condition<select name="new_condition" required>{% for condition in conditions %}<option value="{{ condition }}">{{ condition }}</option>{% endfor %}</select></label>
+<label>Related restoration ID <span class="muted">(optional)</span><input name="restoration_id" placeholder="Paste restoration ID if applicable"></label>
+<label class="wide">Remarks<textarea name="remarks" rows="3" placeholder="Inspection observations and conservation notes"></textarea></label>
+<div class="form-actions"><button class="btn primary" type="submit">Save condition record</button></div></form>{% else %}<div class="empty-state"><p>No artifacts are available. Add artifacts before recording condition history.</p></div>{% endif %}</section>
+<section class="conservation-panel"><div class="panel-heading"><div><p class="eyebrow">ARTIFACT CONDITION LOG</p><h2>Condition Records <span class="count">{{ history|length }}</span></h2></div></div>
+{% if history %}<div class="table-wrap"><table class="conservation-table"><thead><tr><th>Artifact</th><th>Previous condition</th><th>New condition</th><th>Inspection date</th><th>Remarks</th><th>Actions</th></tr></thead><tbody>
+{% for record in history %}<tr><td><strong>{{ record.artifact_title }}</strong></td><td>{{ record.previous_condition }}</td><td><span class="status-chip">{{ record.new_condition }}</span></td><td>{{ record.recorded_date }}</td><td class="description-cell">{{ record.remarks or '—' }}</td><td><details class="row-editor"><summary>Edit</summary><form method="post" action="/conservation/condition-history/{{ record.condition_history_id }}/update" class="compact-form"><label>Previous condition<select name="previous_condition">{% for condition in conditions %}<option value="{{ condition }}" {% if condition == record.previous_condition %}selected{% endif %}>{{ condition }}</option>{% endfor %}</select></label><label>New condition<select name="new_condition">{% for condition in conditions %}<option value="{{ condition }}" {% if condition == record.new_condition %}selected{% endif %}>{{ condition }}</option>{% endfor %}</select></label><label>Inspection date<input type="date" name="recorded_date" required value="{{ record.recorded_date }}"></label><label>Remarks<textarea name="remarks" rows="2">{{ record.remarks or '' }}</textarea></label><button class="btn primary" type="submit">Save changes</button></form><form method="post" action="/conservation/condition-history/{{ record.condition_history_id }}/delete" class="delete-form"><button class="btn danger" type="submit">Delete record</button></form></details></td></tr>{% endfor %}
+</tbody></table></div>{% else %}<div class="empty-state"><h3>No condition history yet</h3><p>Inspection and condition changes will appear here.</p></div>{% endif %}</section>
 {% endblock %}

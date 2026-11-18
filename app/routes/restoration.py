@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import RedirectResponse
 
 from app.models.restoration import RestorationCreate, RestorationUpdate
 from app.services.restoration import (
@@ -13,6 +14,11 @@ router = APIRouter(
     prefix="/restorations",
     tags=["Conservation - Restorations"]
 )
+
+
+@router.get("", include_in_schema=False)
+def restorations_page_redirect():
+    return RedirectResponse("/conservation/restorations", status_code=307)
 
 
 @router.get("/")
