@@ -32,3 +32,21 @@
 .artifact-detail-info dt{font:600 11px 'DM Sans',sans-serif;color:#8c0902;text-transform:uppercase;margin-top:14px}
 .artifact-detail-info dd{margin:4px 0;color:#3c241d;font:14px 'DM Sans',sans-serif}
 @media(max-width:650px){.module-form{grid-template-columns:1fr;padding:18px}.module-form .wide{grid-column:1}.artifact-detail-layout{grid-template-columns:1fr}.module-toolbar{align-items:flex-start;flex-direction:column}}
+
+
+/* Collection module additions */
+.archive-search{display:flex;gap:12px;align-items:center;margin:22px 0 28px;flex-wrap:wrap}
+.archive-search input{flex:1;min-width:220px;padding:13px 15px;border:1px solid #d8c5a5;border-radius:4px;background:#fffdf7;font:14px 'DM Sans',sans-serif;color:#210100}
+.archive-search input:focus{outline:2px solid rgba(177,74,54,.2);border-color:#b14a36}
+.archive-search a,.module-card a{color:#8c0902;text-decoration:none}
+.archive-search a:hover,.module-card a:hover{text-decoration:underline}
+.module-card h3 a{color:#210100}
+.module-image{width:100%;height:210px;object-fit:cover;border-radius:4px;margin-bottom:12px;background:#eee4d2}
+.collection-cover{height:190px}
+.collection-placeholder{display:flex;align-items:center;justify-content:center;letter-spacing:4px;color:#8c0902;background:#efe1c7;font-family:'Cormorant Garamond',serif}
+.collection-flags{font:600 11px 'DM Sans',sans-serif;letter-spacing:.7px;text-transform:uppercase;color:#8c0902;margin:8px 0}
+.card-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:15px}
+.card-actions form{display:inline}
+.text-button{background:none;border:0;color:#8c0902;text-decoration:underline;cursor:pointer;font:500 13px 'DM Sans',sans-serif;padding:4px}
+.muted{color:#806f5d;font-size:12px}
+.profile-biography{max-width:760px;line-height:1.8;color:#5b493b}

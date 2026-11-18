@@ -18,6 +18,12 @@ async def dashboard(request: Request):
         featured = supabase.table("collections").select("*").eq("is_featured", True).order("created_at", desc=True).execute().data or []
         starred = supabase.table("collections").select("*").eq("is_starred", True).order("created_at", desc=True).execute().data or []
         recent = supabase.table("artifacts").select("*").order("created_at", desc=True).limit(5).execute().data or []
+        for collection in featured:
+            links = supabase.table("collection_artifacts").select("artifact_id").eq("collection_id", collection["collection_id"]).execute().data or []
+            ids = [link["artifact_id"] for link in links]
+            collection["artifact_count"] = len(ids)
+            sample = supabase.table("artifacts").select("image_url").in_("artifact_id", ids).not_.is_("image_url", "null").limit(1).execute().data if ids else []
+            collection["cover_image"] = sample[0].get("image_url") if sample else None
     except Exception:
         featured, starred, recent = [], [], []
     context = {"artifact_count":count("artifacts"),"artist_count":count("artists"),"exhibition_count":count("exhibitions"),
