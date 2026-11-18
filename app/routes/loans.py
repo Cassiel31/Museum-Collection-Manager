@@ -19,6 +19,12 @@ from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from fastapi import Form, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
+
+from app.services.loans import create_loan
+from app.services.institutions import get_all_institutions
+from postgrest.exceptions import APIError
 router = APIRouter(
     prefix="/api/loans",
     tags=["Loans"]
@@ -165,4 +171,77 @@ def loans_page(request: Request):
         request=request,
         name="loans/list.html",
         context={"loans": loans}
+    )
+
+@page_router.get("/new", response_class=HTMLResponse)
+def new_loan_page(request: Request):
+    """Display the new loan registration form."""
+
+    institutions = get_all_institutions()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="loans/create.html",
+        context={"institutions": institutions}
+    )
+
+
+@page_router.post("/new")
+def submit_new_loan(
+    request: Request,
+    artifact_id: UUID = Form(...),
+    institution_id: UUID = Form(...),
+    loan_date: date = Form(...),
+    expected_return_date: date = Form(...),
+    status: str = Form("Pending"),
+    notes: str = Form("")
+):
+    """Validate and register a new museum loan."""
+
+    error = None
+
+    if expected_return_date <= loan_date:
+        error = "Expected return date must be after loan date."
+    elif status not in {"Pending", "Active"}:
+        error = "Invalid loan status."
+
+    if error is None:
+        loan_data = {
+            "artifact_id": str(artifact_id),
+            "institution_id": str(institution_id),
+            "loan_date": loan_date.isoformat(),
+            "expected_return_date": expected_return_date.isoformat(),
+            "status": status,
+            "notes": notes
+        }
+
+        try:
+            create_loan(loan_data)
+        except APIError as exc:
+            if exc.code == "23503":
+                error = "Artifact or institution not found."
+            elif exc.code in {"23514", "P0001"}:
+                error = (
+                    "The loan could not be created because "
+                    "it violates a museum loan restriction."
+                )
+            else:
+                raise
+
+    if error:
+        institutions = get_all_institutions()
+
+        return templates.TemplateResponse(
+            request=request,
+            name="loans/create.html",
+            context={
+                "institutions": institutions,
+                "error": error
+            },
+            status_code=400
+        )
+
+    return RedirectResponse(
+        url="/loans/",
+        status_code=303
     )
