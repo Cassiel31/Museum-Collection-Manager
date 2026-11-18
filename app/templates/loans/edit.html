@@ -1,0 +1,78 @@
+
+{% extends "base.html" %}
+
+{% block title %}Update Loan{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Update Loan / Record Return</h1>
+
+    <p>Update the loan information below.</p>
+
+    {% if error %}
+    <p role="alert">{{ error }}</p>
+    {% endif %}
+
+    <form
+        action="/loans/{{ loan.loan_id }}/edit"
+        method="post"
+    >
+        <div>
+            <label for="expected_return_date">
+                Expected Return Date
+            </label>
+            <input
+                type="date"
+                id="expected_return_date"
+                name="expected_return_date"
+                value="{{ loan.expected_return_date }}"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="actual_return_date">
+                Actual Return Date
+            </label>
+            <input
+                type="date"
+                id="actual_return_date"
+                name="actual_return_date"
+                value="{{ loan.actual_return_date or '' }}"
+            >
+        </div>
+
+        <div>
+            <label for="status">Loan Status</label>
+            <select id="status" name="status" required>
+                {% for option in [
+                    "Pending",
+                    "Active",
+                    "Returned",
+                    "Cancelled"
+                ] %}
+                <option
+                    value="{{ option }}"
+                    {% if loan.status == option %}selected{% endif %}
+                >
+                    {{ option }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="notes">Notes</label>
+            <textarea
+                id="notes"
+                name="notes"
+                rows="4"
+            >{{ loan.notes or "" }}</textarea>
+        </div>
+
+        <button type="submit">Save Changes</button>
+
+        <a href="/loans/{{ loan.loan_id }}">Cancel</a>
+    </form>
+</section>
+{% endblock %}
