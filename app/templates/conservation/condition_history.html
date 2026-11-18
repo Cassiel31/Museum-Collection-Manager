@@ -1,0 +1,47 @@
+
+{% extends "base.html" %}
+
+{% block title %}Condition History | The Archive{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div>
+        <h1>Condition History</h1>
+        <p>Track changes in the physical condition of museum artifacts.</p>
+    </div>
+</section>
+
+<section class="content-section">
+    <h2>Artifact Condition Records</h2>
+
+    {% if history %}
+    <table>
+        <thead>
+            <tr>
+                <th>Artifact ID</th>
+                <th>Previous Condition</th>
+                <th>New Condition</th>
+                <th>Recorded Date</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for record in history %}
+            <tr>
+                <td>{{ record.artifact_id }}</td>
+                <td>{{ record.previous_condition }}</td>
+                <td>{{ record.new_condition }}</td>
+                <td>{{ record.recorded_date }}</td>
+                <td>{{ record.remarks or "No remarks" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No condition history records found.</p>
+    {% endif %}
+</section>
+
+{% endblock %}

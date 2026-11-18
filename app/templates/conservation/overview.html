@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Conservation Overview | The Archive{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div>
+        <h1>Conservation Overview</h1>
+        <p>Monitor artifact preservation, restoration work and conservation staff.</p>
+    </div>
+</section>
+
+<section class="dashboard-stats">
+
+    <div class="stat-card">
+        <h3>Requiring Restoration</h3>
+        <p>{{ requiring_restoration }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Ongoing Restorations</h3>
+        <p>{{ ongoing }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Completed Restorations</h3>
+        <p>{{ completed }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Conservation Staff</h3>
+        <p>{{ total_staff }}</p>
+    </div>
+
+</section>
+
+<section class="content-section">
+    <h2>Recent Restoration Records</h2>
+
+    {% if restorations %}
+    <table>
+        <thead>
+            <tr>
+                <th>Damage Description</th>
+                <th>Start Date</th>
+                <th>Status</th>
+                <th>Cost</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for restoration in restorations %}
+            <tr>
+                <td>{{ restoration.damage_description }}</td>
+                <td>{{ restoration.restoration_start_date }}</td>
+                <td>{{ restoration.status }}</td>
+                <td>{{ restoration.restoration_cost or "Not recorded" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No restoration records available yet.</p>
+    {% endif %}
+</section>
+
+{% endblock %}
