@@ -12,6 +12,8 @@ StaffRole = Literal[
     "Researcher"
 ]
 
+EmploymentStatus = Literal["Active", "Inactive"]
+
 
 class StaffCreate(BaseModel):
     full_name: str = Field(min_length=2, max_length=150)
@@ -19,6 +21,7 @@ class StaffCreate(BaseModel):
     phone: str | None = None
     role: StaffRole
     date_joined: date | None = None
+    employment_status: EmploymentStatus = "Active"
 
 
 class StaffUpdate(BaseModel):
@@ -27,6 +30,7 @@ class StaffUpdate(BaseModel):
     phone: str | None = None
     role: StaffRole | None = None
     date_joined: date | None = None
+    employment_status: EmploymentStatus | None = None
 
 
 class StaffRecord(StaffCreate):

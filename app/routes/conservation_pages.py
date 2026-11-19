@@ -156,6 +156,10 @@ def restoration_page(request: Request):
         restorations=restorations,
         artifacts=artifacts,
         staff=staff,
+        active_staff=[
+            member for member in staff
+            if member.get("employment_status", "Active") == "Active"
+        ],
         statuses=RESTORATION_STATUSES
     )
 
@@ -302,6 +306,7 @@ def create_staff_page(
     role: str = Form(...),
     phone: str | None = Form(None),
     date_joined: date | None = Form(None),
+    employment_status: str = Form("Active"),
 ):
     try:
         staff_data = StaffCreate(
@@ -310,6 +315,7 @@ def create_staff_page(
             role=role,
             phone=phone or None,
             date_joined=date_joined,
+            employment_status=employment_status,
         )
 
         create_staff(staff_data)
@@ -337,6 +343,7 @@ def update_staff_page(
     role: str = Form(...),
     phone: str | None = Form(None),
     date_joined: date | None = Form(None),
+    employment_status: str = Form("Active"),
 ):
     try:
         result = update_staff(
@@ -347,6 +354,7 @@ def update_staff_page(
                 role=role,
                 phone=phone or None,
                 date_joined=date_joined,
+                employment_status=employment_status,
             )
         )
 

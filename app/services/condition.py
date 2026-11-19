@@ -9,7 +9,6 @@ TABLE = "condition_history"
 
 
 def get_all_condition_history():
-    """Retrieve all condition history records."""
     response = (
         supabase.table(TABLE)
         .select("*")
@@ -20,7 +19,6 @@ def get_all_condition_history():
 
 
 def get_condition_history_by_id(condition_history_id: str):
-    """Retrieve one condition history record."""
     response = (
         supabase.table(TABLE)
         .select("*")
@@ -32,7 +30,6 @@ def get_condition_history_by_id(condition_history_id: str):
 
 
 def get_artifact_condition_history(artifact_id: str):
-    """Retrieve condition history for a specific artifact."""
     response = (
         supabase.table(TABLE)
         .select("*")
@@ -44,14 +41,8 @@ def get_artifact_condition_history(artifact_id: str):
 
 
 def create_condition_history(record: ConditionHistoryCreate):
-    """Add a condition history record."""
     data = record.model_dump(mode="json", exclude_none=True)
-
-    response = (
-        supabase.table(TABLE)
-        .insert(data)
-        .execute()
-    )
+    response = supabase.table(TABLE).insert(data).execute()
     return response.data[0] if response.data else None
 
 
@@ -59,7 +50,6 @@ def update_condition_history(
     condition_history_id: str,
     record: ConditionHistoryUpdate
 ):
-    """Update a condition history record."""
     data = record.model_dump(mode="json", exclude_unset=True)
 
     if not data:
@@ -69,13 +59,13 @@ def update_condition_history(
         supabase.table(TABLE)
         .update(data)
         .eq("condition_history_id", condition_history_id)
+        .select("*")
         .execute()
     )
     return response.data[0] if response.data else None
 
 
 def delete_condition_history(condition_history_id: str):
-    """Delete a condition history record."""
     response = (
         supabase.table(TABLE)
         .delete()

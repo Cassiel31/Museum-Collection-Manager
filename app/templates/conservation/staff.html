@@ -1,20 +1,179 @@
+
 {% extends "base.html" %}
 {% block title %}Staff Management | The Archive{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="/static/css/conservation.css">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/conservation.css">
+{% endblock %}
+
 {% block content %}
-<section class="page-header"><div><p class="eyebrow">CONSERVATION TEAM</p><h1>Staff Management</h1><p>Manage museum personnel and conservation team members.</p></div></section>
-{% if message %}<div class="notice success">{{ message }}</div>{% endif %}{% if error %}<div class="notice error">{{ error }}</div>{% endif %}
-<section class="conservation-panel"><div class="panel-heading"><div><p class="eyebrow">NEW TEAM MEMBER</p><h2>Add Staff Member</h2></div></div>
-<form class="form-grid" method="post" action="/conservation/staff/create">
-<label>Full name<input name="full_name" required minlength="2" maxlength="150" placeholder="Full name"></label>
-<label>Email<input type="email" name="email" required placeholder="name@museum.org"></label>
-<label>Phone<input name="phone" type="tel" placeholder="Contact number"></label>
-<label>Role<select name="role" required>{% for role in roles %}<option value="{{ role }}">{{ role }}</option>{% endfor %}</select></label>
-<label>Date joined<input name="date_joined" type="date"></label>
-<div class="form-actions"><button class="btn primary" type="submit">Add staff member</button></div>
-</form></section>
-<section class="conservation-panel"><div class="panel-heading"><div><p class="eyebrow">PEOPLE DIRECTORY</p><h2>Staff Directory <span class="count">{{ staff|length }}</span></h2></div></div>
-{% if staff %}<div class="table-wrap"><table class="conservation-table"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Date joined</th><th>Actions</th></tr></thead><tbody>
-{% for member in staff %}<tr><td><strong>{{ member.full_name }}</strong></td><td>{{ member.email }}</td><td>{{ member.phone or "—" }}</td><td><span class="status-chip">{{ member.role }}</span></td><td>{{ member.date_joined or "—" }}</td><td><details class="row-editor"><summary>Edit</summary><form method="post" action="/conservation/staff/{{ member.staff_id }}/update" class="compact-form"><label>Name<input name="full_name" required value="{{ member.full_name }}"></label><label>Email<input type="email" name="email" required value="{{ member.email }}"></label><label>Phone<input name="phone" value="{{ member.phone or '' }}"></label><label>Role<select name="role">{% for role in roles %}<option value="{{ role }}" {% if role == member.role %}selected{% endif %}>{{ role }}</option>{% endfor %}</select></label><label>Date joined<input type="date" name="date_joined" value="{{ member.date_joined or '' }}"></label><button class="btn primary" type="submit">Save changes</button></form><form method="post" action="/conservation/staff/{{ member.staff_id }}/delete" class="delete-form"><button class="btn danger" type="submit">Delete staff member</button></form></details></td></tr>{% endfor %}
-</tbody></table></div>{% else %}<div class="empty-state"><h3>No staff members yet</h3><p>Add your first museum team member using the form above.</p></div>{% endif %}</section>
+<section class="page-header">
+    <div>
+        <p class="eyebrow">CONSERVATION TEAM</p>
+        <h1>Staff Management</h1>
+        <p>Manage museum personnel and conservation team members.</p>
+    </div>
+</section>
+
+{% if message %}
+<div class="notice success">{{ message }}</div>
+{% endif %}
+{% if error %}
+<div class="notice error">{{ error }}</div>
+{% endif %}
+
+<section class="conservation-panel">
+    <div class="panel-heading">
+        <div>
+            <p class="eyebrow">NEW TEAM MEMBER</p>
+            <h2>Add Staff Member</h2>
+        </div>
+    </div>
+
+    <form class="form-grid" method="post" action="/conservation/staff/create">
+        <label>Full name
+            <input name="full_name" required minlength="2" maxlength="150" placeholder="Full name">
+        </label>
+
+        <label>Email
+            <input type="email" name="email" required placeholder="name@museum.org">
+        </label>
+
+        <label>Phone
+            <input name="phone" type="tel" placeholder="Contact number">
+        </label>
+
+        <label>Role
+            <select name="role" required>
+                {% for role in roles %}
+                <option value="{{ role }}">{{ role }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Date joined
+            <input name="date_joined" type="date">
+        </label>
+
+        <label>Employment status
+            <select name="employment_status">
+                <option value="Active" selected>Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </label>
+
+        <div class="form-actions">
+            <button class="btn primary" type="submit">Add staff member</button>
+        </div>
+    </form>
+</section>
+
+<section class="conservation-panel">
+    <div class="panel-heading">
+        <div>
+            <p class="eyebrow">PEOPLE DIRECTORY</p>
+            <h2>Staff Directory <span class="count">{{ staff|length }}</span></h2>
+        </div>
+    </div>
+
+    {% if staff %}
+    <div class="table-wrap">
+        <table class="conservation-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Employment status</th>
+                    <th>Date joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for member in staff %}
+                <tr>
+                    <td><strong>{{ member.full_name }}</strong></td>
+                    <td>{{ member.email }}</td>
+                    <td>{{ member.phone or "—" }}</td>
+                    <td><span class="status-chip">{{ member.role }}</span></td>
+                    <td>
+                        <span class="status-chip">
+                            {{ member.employment_status or "Active" }}
+                        </span>
+                    </td>
+                    <td>{{ member.date_joined or "—" }}</td>
+
+                    <td>
+                        <details class="row-editor">
+                            <summary>Edit</summary>
+
+                            <form method="post"
+                                  action="/conservation/staff/{{ member.staff_id }}/update"
+                                  class="compact-form">
+
+                                <label>Name
+                                    <input name="full_name" required value="{{ member.full_name }}">
+                                </label>
+
+                                <label>Email
+                                    <input type="email" name="email" required value="{{ member.email }}">
+                                </label>
+
+                                <label>Phone
+                                    <input name="phone" value="{{ member.phone or '' }}">
+                                </label>
+
+                                <label>Role
+                                    <select name="role">
+                                        {% for role in roles %}
+                                        <option value="{{ role }}"
+                                            {% if role == member.role %}selected{% endif %}>
+                                            {{ role }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+
+                                <label>Date joined
+                                    <input type="date" name="date_joined"
+                                           value="{{ member.date_joined or '' }}">
+                                </label>
+
+                                <label>Employment status
+                                    <select name="employment_status">
+                                        <option value="Active"
+                                            {% if (member.employment_status or "Active") == "Active" %}selected{% endif %}>
+                                            Active
+                                        </option>
+                                        <option value="Inactive"
+                                            {% if member.employment_status == "Inactive" %}selected{% endif %}>
+                                            Inactive
+                                        </option>
+                                    </select>
+                                </label>
+
+                                <button class="btn primary" type="submit">Save changes</button>
+                            </form>
+
+                            <form method="post"
+                                  action="/conservation/staff/{{ member.staff_id }}/delete"
+                                  class="delete-form">
+                                <button class="btn danger" type="submit">Delete staff member</button>
+                            </form>
+                        </details>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <h3>No staff members yet</h3>
+        <p>Add your first museum team member using the form above.</p>
+    </div>
+    {% endif %}
+</section>
 {% endblock %}

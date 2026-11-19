@@ -1,21 +1,241 @@
+
 {% extends "base.html" %}
 {% block title %}Restoration Records | The Archive{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="/static/css/conservation.css">{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/conservation.css">
+{% endblock %}
+
 {% block content %}
-<section class="page-header"><div><p class="eyebrow">ARTIFACT PRESERVATION</p><h1>Restoration Records</h1><p>Record conservation work, assign conservators and track restoration progress.</p></div></section>
-{% if message %}<div class="notice success">{{ message }}</div>{% endif %}{% if error %}<div class="notice error">{{ error }}</div>{% endif %}
-<section class="conservation-panel"><div class="panel-heading"><div><p class="eyebrow">START A CASE</p><h2>Create Restoration Record</h2></div></div>
-{% if artifacts and staff %}<form class="form-grid" method="post" action="/conservation/restorations/create">
-<label>Artifact<select name="artifact_id" required><option value="">Select artifact</option>{% for artifact in artifacts %}<option value="{{ artifact.artifact_id }}">{{ artifact.title }} · {{ artifact.current_condition or 'Condition unknown' }}</option>{% endfor %}</select></label>
-<label>Conservator<select name="staff_id" required><option value="">Select staff member</option>{% for member in staff %}<option value="{{ member.staff_id }}">{{ member.full_name }} · {{ member.role }}</option>{% endfor %}</select></label>
-<label class="wide">Damage description<textarea name="damage_description" required rows="3" placeholder="Describe the damage observed"></textarea></label>
-<label>Start date<input type="date" name="restoration_start_date" required></label><label>Expected completion<input type="date" name="expected_completion_date"></label>
-<label>Actual completion<input type="date" name="actual_completion_date"></label><label>Estimated / actual cost<input type="number" name="restoration_cost" min="0" step="0.01"></label>
-<label>Status<select name="status">{% for status in statuses %}<option value="{{ status }}">{{ status }}</option>{% endfor %}</select></label>
-<label class="wide">Notes<textarea name="notes" rows="2" placeholder="Additional notes (optional)"></textarea></label>
-<div class="form-actions"><button class="btn primary" type="submit">Create restoration record</button></div></form>{% else %}<div class="empty-state"><p>Add at least one artifact and one staff member before creating a restoration record.</p></div>{% endif %}</section>
-<section class="conservation-panel"><div class="panel-heading"><div><p class="eyebrow">WORK REGISTER</p><h2>All Restoration Records <span class="count">{{ restorations|length }}</span></h2></div></div>
-{% if restorations %}<div class="table-wrap"><table class="conservation-table"><thead><tr><th>Artifact</th><th>Conservator</th><th>Damage description</th><th>Start date</th><th>Expected completion</th><th>Status</th><th>Cost</th><th>Actions</th></tr></thead><tbody>
-{% for record in restorations %}<tr><td><strong>{{ record.artifact_title }}</strong></td><td>{{ record.staff_name }}</td><td class="description-cell">{{ record.damage_description }}</td><td>{{ record.restoration_start_date }}</td><td>{{ record.expected_completion_date or '—' }}</td><td><span class="status-chip">{{ record.status }}</span></td><td>{{ record.restoration_cost or '—' }}</td><td><details class="row-editor"><summary>Edit</summary><form method="post" action="/conservation/restorations/{{ record.restoration_id }}/update" class="compact-form"><label>Conservator<select name="staff_id" required>{% for member in staff %}<option value="{{ member.staff_id }}" {% if member.staff_id == record.staff_id %}selected{% endif %}>{{ member.full_name }}</option>{% endfor %}</select></label><label>Damage description<textarea name="damage_description" required rows="3">{{ record.damage_description }}</textarea></label><label>Start date<input type="date" name="restoration_start_date" required value="{{ record.restoration_start_date }}"></label><label>Expected completion<input type="date" name="expected_completion_date" value="{{ record.expected_completion_date or '' }}"></label><label>Actual completion<input type="date" name="actual_completion_date" value="{{ record.actual_completion_date or '' }}"></label><label>Cost<input type="number" name="restoration_cost" min="0" step="0.01" value="{{ record.restoration_cost or '' }}"></label><label>Status<select name="status">{% for status in statuses %}<option value="{{ status }}" {% if status == record.status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select></label><label>Notes<textarea name="notes" rows="2">{{ record.notes or '' }}</textarea></label><button class="btn primary" type="submit">Save changes</button></form><form method="post" action="/conservation/restorations/{{ record.restoration_id }}/delete" class="delete-form"><button class="btn danger" type="submit">Delete record</button></form></details></td></tr>{% endfor %}
-</tbody></table></div>{% else %}<div class="empty-state"><h3>No restoration records yet</h3><p>New restoration cases will appear here.</p></div>{% endif %}</section>
+<section class="page-header">
+    <div>
+        <p class="eyebrow">ARTIFACT PRESERVATION</p>
+        <h1>Restoration Records</h1>
+        <p>Record conservation work, assign conservators and track restoration progress.</p>
+    </div>
+</section>
+
+{% if message %}
+<div class="notice success">{{ message }}</div>
+{% endif %}
+{% if error %}
+<div class="notice error">{{ error }}</div>
+{% endif %}
+
+<section class="conservation-panel">
+    <div class="panel-heading">
+        <div>
+            <p class="eyebrow">START A CASE</p>
+            <h2>Create Restoration Record</h2>
+        </div>
+    </div>
+
+    {% if artifacts and active_staff %}
+    <form class="form-grid" method="post" action="/conservation/restorations/create">
+
+        <label>Artifact
+            <select name="artifact_id" required>
+                <option value="">Select artifact</option>
+                {% for artifact in artifacts %}
+                <option value="{{ artifact.artifact_id }}">
+                    {{ artifact.title }} · {{ artifact.current_condition or 'Condition unknown' }}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Conservator
+            <select name="staff_id" required>
+                <option value="">Select active staff member</option>
+                {% for member in active_staff %}
+                <option value="{{ member.staff_id }}">
+                    {{ member.full_name }} · {{ member.role }}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label class="wide">Damage description
+            <textarea name="damage_description" required rows="3"
+                      placeholder="Describe the damage observed"></textarea>
+        </label>
+
+        <label>Start date
+            <input type="date" name="restoration_start_date" required>
+        </label>
+
+        <label>Expected completion
+            <input type="date" name="expected_completion_date">
+        </label>
+
+        <label>Actual completion
+            <input type="date" name="actual_completion_date">
+        </label>
+
+        <label>Estimated / actual cost
+            <input type="number" name="restoration_cost" min="0" step="0.01">
+        </label>
+
+        <label>Status
+            <select name="status">
+                {% for status in statuses %}
+                <option value="{{ status }}">{{ status }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label class="wide">Notes
+            <textarea name="notes" rows="2"
+                      placeholder="Additional notes (optional)"></textarea>
+        </label>
+
+        <div class="form-actions">
+            <button class="btn primary" type="submit">
+                Create restoration record
+            </button>
+        </div>
+    </form>
+
+    {% else %}
+    <div class="empty-state">
+        <p>
+            Add at least one artifact and one active staff member
+            before creating a restoration record.
+        </p>
+    </div>
+    {% endif %}
+</section>
+
+<section class="conservation-panel">
+    <div class="panel-heading">
+        <div>
+            <p class="eyebrow">WORK REGISTER</p>
+            <h2>
+                All Restoration Records
+                <span class="count">{{ restorations|length }}</span>
+            </h2>
+        </div>
+    </div>
+
+    {% if restorations %}
+    <div class="table-wrap">
+        <table class="conservation-table">
+            <thead>
+                <tr>
+                    <th>Artifact</th>
+                    <th>Conservator</th>
+                    <th>Damage description</th>
+                    <th>Start date</th>
+                    <th>Expected completion</th>
+                    <th>Status</th>
+                    <th>Cost</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for record in restorations %}
+                <tr>
+                    <td><strong>{{ record.artifact_title }}</strong></td>
+                    <td>{{ record.staff_name }}</td>
+                    <td class="description-cell">{{ record.damage_description }}</td>
+                    <td>{{ record.restoration_start_date }}</td>
+                    <td>{{ record.expected_completion_date or '—' }}</td>
+                    <td>
+                        <span class="status-chip">{{ record.status }}</span>
+                    </td>
+                    <td>{{ record.restoration_cost or '—' }}</td>
+
+                    <td>
+                        <details class="row-editor">
+                            <summary>Edit</summary>
+
+                            <form method="post"
+                                  action="/conservation/restorations/{{ record.restoration_id }}/update"
+                                  class="compact-form">
+
+                                <label>Conservator
+                                    <select name="staff_id" required>
+                                        {% for member in staff %}
+                                            {% if (member.employment_status or "Active") == "Active"
+                                                  or member.staff_id == record.staff_id %}
+                                            <option value="{{ member.staff_id }}"
+                                                {% if member.staff_id == record.staff_id %}selected{% endif %}>
+                                                {{ member.full_name }}
+                                                {% if member.employment_status == "Inactive" %}
+                                                    (Inactive)
+                                                {% endif %}
+                                            </option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </label>
+
+                                <label>Damage description
+                                    <textarea name="damage_description" required rows="3">{{ record.damage_description }}</textarea>
+                                </label>
+
+                                <label>Start date
+                                    <input type="date" name="restoration_start_date"
+                                           required value="{{ record.restoration_start_date }}">
+                                </label>
+
+                                <label>Expected completion
+                                    <input type="date" name="expected_completion_date"
+                                           value="{{ record.expected_completion_date or '' }}">
+                                </label>
+
+                                <label>Actual completion
+                                    <input type="date" name="actual_completion_date"
+                                           value="{{ record.actual_completion_date or '' }}">
+                                </label>
+
+                                <label>Cost
+                                    <input type="number" name="restoration_cost"
+                                           min="0" step="0.01"
+                                           value="{{ record.restoration_cost or '' }}">
+                                </label>
+
+                                <label>Status
+                                    <select name="status">
+                                        {% for status in statuses %}
+                                        <option value="{{ status }}"
+                                            {% if status == record.status %}selected{% endif %}>
+                                            {{ status }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+
+                                <label>Notes
+                                    <textarea name="notes" rows="2">{{ record.notes or '' }}</textarea>
+                                </label>
+
+                                <button class="btn primary" type="submit">
+                                    Save changes
+                                </button>
+                            </form>
+
+                            <form method="post"
+                                  action="/conservation/restorations/{{ record.restoration_id }}/delete"
+                                  class="delete-form">
+                                <button class="btn danger" type="submit">
+                                    Delete record
+                                </button>
+                            </form>
+                        </details>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <h3>No restoration records yet</h3>
+        <p>New restoration cases will appear here.</p>
+    </div>
+    {% endif %}
+</section>
 {% endblock %}
